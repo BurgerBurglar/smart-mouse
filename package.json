@@ -1,0 +1,29 @@
+{
+  "name": "smart-mouse",
+  "version": "1.0.0",
+  "description": "a smart mouse bot that helps people ",
+  "main": "src/index.js",
+  "author": "burgerburglar",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "openai": "^3.3.0",
+    "qrcode-terminal": "^0.12.0",
+    "wechaty": "^1.19.10",
+    "wechaty-puppet": "^1.19.6",
+    "wechaty-puppet-padlocal": "^1.11.18"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  },
+  "scripts": {
+    "start": "npx ts-node src/index.ts"
+  },
+  "engines": {
+    "node": ">= 16",
+    "npm": ">=7"
+  }
+}
