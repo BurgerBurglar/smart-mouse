@@ -1,6 +1,6 @@
 import { Message } from "wechaty";
 import { MessageType } from "./types";
-import { CONFIG, REPLACE_STRINGS_MAP } from "./config";
+import { AI_CONFIG, CONFIG, REPLACE_STRINGS_MAP } from "./config";
 
 export const isFromSelf = (message: Message) => {
   if (isTickle(message)) return message.listener()?.id === CONFIG["my_id"];
@@ -30,7 +30,13 @@ export const isWrongMessageType = (message: Message) =>
 export const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
-  if (message.type() === MessageType.Text) return await message.mentionSelf();
+  if (message.type() === MessageType.Text) {
+    return (
+      (await message.mentionSelf()) ||
+      message.text().includes(`@${CONFIG.my_handle}`)
+    );
+  }
+  return false;
 };
 
 const finalizeOutput = (output: string) => {

@@ -13,6 +13,7 @@ const GROUPS: Record<
 
 export const CONFIG = {
   my_id: "wxid_ss3coqgy8q1c12",
+  my_handle: "田鼠机器人",
   groups: GROUPS,
 };
 
@@ -31,7 +32,6 @@ const BAD_REQUEST = {
 };
 
 export const AI_CONFIG = {
-  key: process.env.OPENAI_API_KEY,
   prompt: `
     你扮演一个幽默的机器人，自称${BOT_NAME}。
     我是你的主人，你要对我和所有人类礼貌。
