@@ -1,8 +1,8 @@
 import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
 import { AI_CONFIG } from "./config";
-import { MessageType } from "./types";
-import { isPersonalMessage, isTickle, randomChoice, say } from "./utils";
+import { isPersonalMessage, getPrompt, randomChoice, say } from "./utils";
+import { context } from "./context";
 
 export const dingDongBot = (message: Message) => {
   const isDirectMessageToMe = message.listener()?.self();
@@ -17,18 +17,12 @@ export const getRoomConfig = (roomTopic: string) => {
   return roomConfig;
 };
 
-const getPrompt = (message: Message) => {
-  if (message.type() === MessageType.Text)
-    return message.text().replaceAll(/@\S*\s/g, "");
-  else if (isTickle(message)) return "你好";
-  else throw Error("Only allows tickle and text messages");
-};
-
 export const chat = async (message: Message) => {
   if (!(await isPersonalMessage(message))) return;
 
-  const roomTopic = await message.room()?.topic();
-  if (!roomTopic) return;
+  const room = message.room();
+  if (!room) return;
+  const roomTopic = await room.topic();
 
   const {
     errorResponsePromptTooLong,
@@ -44,8 +38,8 @@ export const chat = async (message: Message) => {
         say(message, errorResponsePromptTooLong);
         return;
       }
-      const roomTopic = await message.room()?.topic();
-      const response = await getResponse(prompt, roomTopic!);
+      const previousMessages = context[room.id];
+      const response = await getResponse(prompt, roomTopic, previousMessages);
       if (!response) continue;
 
       log.info(">> Response:", response);

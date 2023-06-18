@@ -1,6 +1,14 @@
 import { Message } from "wechaty";
 import { MessageType } from "./types";
 import { CONFIG, REPLACE_STRINGS_MAP } from "./config";
+import { addMessages } from "./context";
+
+export const getPrompt = (message: Message) => {
+  if (message.type() === MessageType.Text)
+    return message.text().replaceAll(/@\S*\s/g, "");
+  else if (isTickle(message)) return "你好鸭";
+  else throw Error("Only allows tickle and text messages");
+};
 
 const getTalker = (message: Message) => {
   if (isTickle(message)) return message.listener();
@@ -60,5 +68,10 @@ export const say = (message: Message, content: string) => {
   }
   const talker = getTalker(message);
   const mentionList = talker ? [talker] : [];
-  room.say(content, ...mentionList);
+  room.say(output, ...mentionList);
+  const prompt = getPrompt(message);
+  addMessages(room.id, [
+    { role: "user", content: prompt },
+    { role: "assistant", content: output },
+  ]);
 };
