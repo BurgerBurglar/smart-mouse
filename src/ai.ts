@@ -12,13 +12,14 @@ export const getResponse = async (
   previousMessages: ChatCompletionRequestMessage[] = []
 ) => {
   const { initialPrompt } = getRoomConfig(roomTopic);
+  const messages: ChatCompletionRequestMessage[] = [
+    { role: "system", content: initialPrompt },
+    ...previousMessages,
+    { role: "user", content: prompt },
+  ];
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: [
-      { role: "system", content: initialPrompt },
-      ...previousMessages,
-      { role: "user", content: prompt },
-    ],
+    messages,
   });
   const response = chatCompletion.data.choices[0].message?.content;
   return response;
