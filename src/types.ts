@@ -18,3 +18,14 @@ export enum MessageType {
   Video = 15, // Video(4), Video(43)
   Post = 16, // Moment, Channel, Tweet, etc
 }
+
+export type GroupAiConfig = Record<
+  string,
+  {
+    initialPrompt: string;
+    errorResponsePromptTooLong: string;
+    errorResponse429: string;
+    errorResponseGeneral: string;
+    badRequestReplies: string[];
+  }
+>;

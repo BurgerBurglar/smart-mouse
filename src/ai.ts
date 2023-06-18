@@ -1,16 +1,17 @@
 import { Configuration, OpenAIApi } from "openai";
-import { AI_CONFIG } from "./config";
+import { getRoomConfig } from "./chat";
 
 const configuration = new Configuration({
-  apiKey: AI_CONFIG.key,
+  apiKey: process.env["OPENAI_API_KEY"],
 });
 const openai = new OpenAIApi(configuration);
 
-export const getResponse = async (prompt: string) => {
+export const getResponse = async (prompt: string, roomTopic: string) => {
+  const { initialPrompt } = getRoomConfig(roomTopic);
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [
-      { role: "system", content: AI_CONFIG.prompt },
+      { role: "system", content: initialPrompt },
       { role: "user", content: prompt },
     ],
   });
