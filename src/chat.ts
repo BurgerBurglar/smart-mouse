@@ -38,22 +38,26 @@ export const chat = async (message: Message) => {
   } = getRoomConfig(roomTopic);
 
   try {
-    const prompt = getPrompt(message);
-    if (prompt.length > AI_CONFIG.max_length) {
-      say(message, errorResponsePromptTooLong);
-      return;
-    }
-    const roomTopic = await message.room()?.topic();
-    const response = await getResponse(prompt, roomTopic!);
-    if (!response) return;
+    for (let i = 0; i < AI_CONFIG.max_retries; i++) {
+      const prompt = getPrompt(message);
+      if (prompt.length > AI_CONFIG.max_length) {
+        say(message, errorResponsePromptTooLong);
+        return;
+      }
+      const roomTopic = await message.room()?.topic();
+      const response = await getResponse(prompt, roomTopic!);
+      if (!response) continue;
 
-    log.info(">> Response:", response);
-    if (AI_CONFIG.badResponseFlags.some((flag) => response?.includes(flag))) {
-      const badResponse = randomChoice(badRequestReplies);
-      say(message, badResponse);
+      log.info(">> Response:", response);
+      if (AI_CONFIG.badResponseFlags.some((flag) => response?.includes(flag))) {
+        if (i !== AI_CONFIG.max_retries - 1) continue;
+        const badResponse = randomChoice(badRequestReplies);
+        say(message, badResponse);
+        return;
+      }
+      say(message, response);
       return;
     }
-    say(message, response);
   } catch (error: any) {
     console.error(error);
     if (error?.response?.status === 429) {

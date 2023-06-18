@@ -80,6 +80,7 @@ const GROUP_AI_CONFIG: GroupAiConfig = {
 
 export const AI_CONFIG = {
   max_length: 200,
+  max_retries: 3,
   badResponseFlags: [
     "抱歉",
     "遗憾",
