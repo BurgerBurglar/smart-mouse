@@ -98,14 +98,6 @@ const GROUP_AI_CONFIG: GroupAiConfig = {
 export const AI_CONFIG = {
   max_length: 200,
   max_retries: 3,
-  badResponseFlags: [
-    "抱歉",
-    "遗憾",
-    "请不要",
-    "道德",
-    "尊重",
-    "歧视",
-    "种族主义",
-  ],
+  badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
   groups: GROUP_AI_CONFIG,
 };

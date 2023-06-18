@@ -1,10 +1,14 @@
 import { Message } from "wechaty";
 import { MessageType } from "./types";
-import { AI_CONFIG, CONFIG, REPLACE_STRINGS_MAP } from "./config";
+import { CONFIG, REPLACE_STRINGS_MAP } from "./config";
+
+const getTalker = (message: Message) => {
+  if (isTickle(message)) return message.listener();
+  return message.talker();
+};
 
 export const isFromSelf = (message: Message) => {
-  if (isTickle(message)) return message.listener()?.id === CONFIG["my_id"];
-  else return message.talker().id === CONFIG["my_id"];
+  return getTalker(message)?.id === CONFIG["my_id"];
 };
 
 export const randomChoice = <T>(values: T[]) =>
@@ -48,5 +52,13 @@ const finalizeOutput = (output: string) => {
 };
 
 export const say = (message: Message, content: string) => {
-  message.say(finalizeOutput(content));
+  const output = finalizeOutput(content);
+  const room = message.room();
+  if (!room) {
+    message.say(output);
+    return;
+  }
+  const talker = getTalker(message);
+  const mentionList = talker ? [talker] : [];
+  room.say(content, ...mentionList);
 };
