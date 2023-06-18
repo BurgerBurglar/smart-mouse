@@ -1,4 +1,4 @@
-import { Message } from "wechaty";
+import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
 import { AI_CONFIG } from "./config";
 import { MessageType } from "./types";
@@ -47,6 +47,7 @@ export const chat = async (message: Message) => {
     const response = await getResponse(prompt, roomTopic!);
     if (!response) return;
 
+    log.info(">> Response:", response);
     if (AI_CONFIG.badResponseFlags.some((flag) => response?.includes(flag))) {
       const badResponse = randomChoice(badRequestReplies);
       say(message, badResponse);
