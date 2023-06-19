@@ -96,6 +96,15 @@ const GROUP_AI_CONFIG: GroupAiConfig = {
   },
 };
 
+export const LANGUAGE_HELP_CONFIG = {
+  allowedRooms: ["調查兵團第一O一期訓練生🇺🇸", "DUOLINGO大比拼🤔"],
+  summonFlag: "#作文批改",
+  initialPrompt: `
+    修改这一篇作文。只修改语法和词汇错误，不要修改句意或者润色。
+    用中文对这篇作文的水平给出简短评价，并做出鼓励。
+  `,
+};
+
 export const AI_CONFIG = {
   max_length: 200,
   max_retries: 3,

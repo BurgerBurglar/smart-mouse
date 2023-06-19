@@ -5,7 +5,10 @@ import { addMessages } from "./context";
 
 export const getPrompt = (message: Message) => {
   if (message.type() === MessageType.Text)
-    return message.text().replaceAll(/@\S*\s/g, "");
+    return message
+      .text()
+      .replaceAll(/@\S*\s/g, "")
+      .trim();
   else if (isTickle(message)) return "你好鸭";
   else throw Error("Only allows tickle and text messages");
 };

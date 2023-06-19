@@ -1,3 +1,5 @@
+import { ChatCompletionRequestMessage } from "openai";
+
 export enum MessageType {
   Unknown = 0,
 
@@ -29,3 +31,9 @@ export type GroupAiConfig = Record<
     badRequestReplies: string[];
   }
 >;
+
+export interface getResponseProps {
+  prompt: string;
+  initialPrompt: string;
+  previousMessages?: ChatCompletionRequestMessage[];
+}

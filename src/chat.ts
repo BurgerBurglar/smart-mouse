@@ -25,6 +25,7 @@ export const chat = async (message: Message) => {
   const roomTopic = await room.topic();
 
   const {
+    initialPrompt,
     errorResponsePromptTooLong,
     errorResponse429,
     errorResponseGeneral,
@@ -39,7 +40,11 @@ export const chat = async (message: Message) => {
         return;
       }
       const previousMessages = context[room.id];
-      const response = await getResponse(prompt, roomTopic, previousMessages);
+      const response = await getResponse({
+        prompt,
+        initialPrompt,
+        previousMessages,
+      });
       if (!response) continue;
 
       log.info(">> Response:", response);

@@ -1,17 +1,16 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { getRoomConfig } from "./chat";
+import { getResponseProps } from "./types";
 
 const configuration = new Configuration({
   apiKey: process.env["OPENAI_API_KEY"],
 });
 const openai = new OpenAIApi(configuration);
 
-export const getResponse = async (
-  prompt: string,
-  roomTopic: string,
-  previousMessages: ChatCompletionRequestMessage[] = []
-) => {
-  const { initialPrompt } = getRoomConfig(roomTopic);
+export const getResponse = async ({
+  prompt,
+  initialPrompt,
+  previousMessages = [],
+}: getResponseProps) => {
   const messages: ChatCompletionRequestMessage[] = [
     { role: "system", content: initialPrompt },
     ...previousMessages,
