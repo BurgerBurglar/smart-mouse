@@ -19,7 +19,7 @@ const getTalker = (message: Message) => {
 };
 
 export const isFromSelf = (message: Message) => {
-  return getTalker(message)?.id === CONFIG["my_id"];
+  return getTalker(message)?.id === message.wechaty.currentUser.id;
 };
 
 export const randomChoice = <T>(values: T[]) =>
@@ -35,12 +35,19 @@ export const isTickle = (message: Message) => {
 export const isTickleMe = (message: Message) => {
   return (
     isTickle(message) &&
-    message.text().includes(`<pattedusername>${CONFIG.my_id}</pattedusername>`)
+    message
+      .text()
+      .includes(
+        `<pattedusername>${message.wechaty.currentUser.id}</pattedusername>`
+      )
   );
 };
 
 export const isWrongMessageType = (message: Message) =>
   ![MessageType.Text, MessageType.Recalled].includes(message.type());
+
+const removeQuoting = (message: Message) =>
+  message.text().replace(/.*\n- - - - - - - - - - - - - - -\n/, "");
 
 export const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
@@ -48,7 +55,7 @@ export const isPersonalMessage = async (message: Message) => {
   if (message.type() === MessageType.Text) {
     return (
       (await message.mentionSelf()) ||
-      message.text().includes(`@${CONFIG.my_handle}`)
+      removeQuoting(message).includes(`@${message.wechaty.currentUser.name()}`)
     );
   }
   return false;
