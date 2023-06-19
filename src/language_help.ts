@@ -14,8 +14,8 @@ const shouldDoLanguageHelp = async (message: Message) => {
   if (message.type() !== MessageType.Text) return false;
   const room = message.room();
   if (!room) return false;
-  if (LANGUAGE_HELP_CONFIG.allowedRooms.includes(await room.topic()))
-    return false;
+  const roomTopic = await room.topic();
+  if (!LANGUAGE_HELP_CONFIG.allowedRooms.includes(roomTopic)) return false;
   return message.text().includes(LANGUAGE_HELP_CONFIG.summonFlag);
 };
 

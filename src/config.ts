@@ -99,9 +99,10 @@ const GROUP_AI_CONFIG: GroupAiConfig = {
 
 export const LANGUAGE_HELP_CONFIG = {
   allowedRooms: ["調查兵團第一O一期訓練生🇺🇸", "DUOLINGO大比拼🤔"],
-  summonFlag: "#作文批改",
+  summonFlag: "#批改作文",
   initialPrompt: `
     修改这一篇作文。只修改语法和词汇错误，不要修改句意或者润色。
+    作文用什么语言，你就修改成什么语言 ，千万不要翻译成别的语言。
     用中文对这篇作文的水平给出简短评价，并做出鼓励。
   `,
 };
