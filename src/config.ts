@@ -8,6 +8,7 @@ export const CONFIG = {
 
 export const REPLACE_STRINGS_MAP = [
   { source: "呀", target: "鸭" },
+  { source: "我", target: BOT_NAME },
   { source: "农", target: "衣" },
 ];
 
