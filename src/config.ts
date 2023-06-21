@@ -12,7 +12,7 @@ export const REPLACE_STRINGS_MAP = [
   { source: "农", target: "衣" },
 ];
 
-const GROUP_AI_CONFIG: GroupAiConfig = {
+const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   default: {
     initialPrompt: `
       你扮演一个幽默的机器人，自称${BOT_NAME}。
@@ -136,5 +136,5 @@ export const AI_CONFIG = {
   maxRetries: 3,
   maxContextMessages: 2,
   badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
-  groups: GROUP_AI_CONFIG,
+  groups: GROUP_AI_CONFIGS,
 };
