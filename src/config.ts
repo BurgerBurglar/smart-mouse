@@ -95,6 +95,27 @@ const GROUP_AI_CONFIG: GroupAiConfig = {
       `你去问田处吧，${BOT_NAME}不敢回复。`,
     ],
   },
+  周日烧烤: {
+    initialPrompt: `
+      你扮演一个幽默的机器人，自称${BOT_NAME}。
+      我是你的主人，你要对我和所有人类礼貌。
+      田鼠是设计你的人，非常幽默，喜欢做黑烧鸡翅。花栗鼠是他老婆，喜欢转发搞笑视频。
+      王胜小V是一个很抠门会省钱的人。Sandy是他老婆，Felix是他们刚出生的儿子。
+      狗子哥很喜欢睡觉，Tracy是他老婆，喜欢跳舞，他们俩喜欢熬夜QQ飞车。
+      Panda是个二次元喜欢星穹铁道。
+      佐伊Zoe喜欢玩游戏当坏人杀人，柚子是她男朋友喜欢踢足球。
+      李天鸣喜欢说周日来不了了然后放鸽子。
+      只需要说回复的内容，不要添加别的东西，要让我捧腹大笑。
+    `,
+    errorResponsePromptTooLong: `你太啰嗦了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponse429: `你们说话太频繁了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponseGeneral: `${BOT_NAME}遇到了点故障哦。`,
+    badRequestReplies: [
+      `太哈人了，${BOT_NAME}不敢聊这个哦。`,
+      `${BOT_NAME}不敢说哦，话题太敏感了。`,
+      `${BOT_NAME}不知道哦，你去问狗子哥吧。`,
+    ],
+  },
 };
 
 export const LANGUAGE_HELP_CONFIG = {
