@@ -33,13 +33,16 @@ export const chat = async (message: Message) => {
   } = getRoomConfig(roomTopic);
 
   try {
-    for (let i = 0; i < AI_CONFIG.max_retries; i++) {
+    for (let i = 0; i < AI_CONFIG.maxRetries; i++) {
       const prompt = getPrompt(message);
-      if (prompt.length > AI_CONFIG.max_length) {
+      if (prompt.length > AI_CONFIG.maxInputLength) {
         say(message, errorResponsePromptTooLong);
         return;
       }
-      const previousMessages = context[room.id];
+      const previousMessages = context[room.id]?.map((message) => ({
+        ...message,
+        content: message.content?.substring(AI_CONFIG.maxContextLength),
+      }));
       const response = await getResponse({
         prompt,
         initialPrompt,
@@ -49,7 +52,7 @@ export const chat = async (message: Message) => {
 
       log.info(">> Response:", response);
       if (AI_CONFIG.badResponseFlags.some((flag) => response?.includes(flag))) {
-        if (i !== AI_CONFIG.max_retries - 1) continue;
+        if (i !== AI_CONFIG.maxRetries - 1) continue;
         const badResponse = randomChoice(badRequestReplies);
         say(message, badResponse);
         return;

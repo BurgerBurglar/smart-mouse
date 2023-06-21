@@ -108,9 +108,11 @@ export const LANGUAGE_HELP_CONFIG = {
 };
 
 export const AI_CONFIG = {
-  max_length: 200,
-  max_retries: 3,
-  max_context_messages: 2,
+  maxInputLength: 200,
+  maxTokens: 500,
+  maxContextLength: 30,
+  maxRetries: 3,
+  maxContextMessages: 2,
   badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
   groups: GROUP_AI_CONFIG,
 };

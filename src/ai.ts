@@ -1,5 +1,6 @@
 import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
 import { getResponseProps } from "./types";
+import { AI_CONFIG } from "./config";
 
 const configuration = new Configuration({
   apiKey: process.env["OPENAI_API_KEY"],
@@ -20,6 +21,7 @@ export const getResponse = async ({
   const chatCompletion = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages,
+    max_tokens: AI_CONFIG.maxTokens,
   });
   const response = chatCompletion.data.choices[0].message?.content;
   return response;

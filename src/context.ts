@@ -13,7 +13,7 @@ export const addMessages = (
   const totalUserMessages = [...context[roomId], ...messages].filter(
     ({ role }) => role === "user"
   ).length;
-  if (totalUserMessages > AI_CONFIG.max_context_messages) {
+  if (totalUserMessages > AI_CONFIG.maxContextMessages) {
     context[roomId] = context[roomId].slice(messages.length);
   }
   context[roomId].push(...messages);
