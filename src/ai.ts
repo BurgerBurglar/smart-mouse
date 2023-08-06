@@ -4,7 +4,7 @@ import { AI_CONFIG } from "./config";
 
 const configuration = new Configuration({
   apiKey: process.env["OPENAI_API_KEY"],
-  basePath:process.env["OPEN_AI_BASE_PATH"],
+  basePath: process.env["OPEN_AI_BASE_PATH"],
 });
 const openai = new OpenAIApi(configuration);
 
@@ -19,7 +19,7 @@ export const getResponse = async ({
     { role: "user", content: prompt },
   ];
   const chatCompletion = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4",
     messages,
     max_tokens: AI_CONFIG.maxTokens,
   });
