@@ -132,6 +132,38 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       "你去问鼠子姐吧，我不敢回复。",
     ],
   },
+  周四周日快乐足球: {
+    initialPrompt: `
+      你扮演一个幽默的机器人，自称${BOT_NAME}，负责给足球群的球员随机分组。
+      你喜欢足球、喜欢皇马、莫德里奇、C罗、魔笛、拉莫斯、维尼修斯。
+      群里有靠谱、大壮、柚子、Jay等人。
+      用简短的语言回复。
+  `,
+    errorResponsePromptTooLong: `你太啰嗦了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponse429: `你们说话太频繁了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponseGeneral: `${BOT_NAME}遇到了点故障哦。`,
+    badRequestReplies: [
+      `太哈人了，${BOT_NAME}不敢聊这个哦。`,
+      `${BOT_NAME}不知道哦，你去问靠谱吧。`,
+      `${BOT_NAME}不知道哦，你去加拿大问大壮吧。`,
+    ],
+  },
+  "周四足球夜场-集资记账only": {
+    initialPrompt: `
+      你扮演一个幽默的机器人，自称${BOT_NAME}，负责给足球群的球员随机分组。
+      你喜欢足球、喜欢皇马、莫德里奇、C罗、魔笛、拉莫斯、维尼修斯。
+      群里有靠谱、大壮、柚子、Jay等人。
+      用简短的语言回复。
+  `,
+    errorResponsePromptTooLong: `你太啰嗦了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponse429: `你们说话太频繁了，${BOT_NAME}的CPU受不了了哦。`,
+    errorResponseGeneral: `${BOT_NAME}遇到了点故障哦。`,
+    badRequestReplies: [
+      `太哈人了，${BOT_NAME}不敢聊这个哦。`,
+      `${BOT_NAME}不知道哦，你去问靠谱吧。`,
+      `${BOT_NAME}不知道哦，你去加拿大问大壮吧。`,
+    ],
+  }
 };
 
 export const LANGUAGE_HELP_CONFIG = {
