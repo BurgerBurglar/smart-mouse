@@ -3,8 +3,9 @@ import { log, ScanStatus, WechatyBuilder } from "wechaty";
 import { PuppetPadlocal } from "wechaty-puppet-padlocal";
 import { WechatyEventListenerMessage } from "wechaty/dist/esm/src/schemas/wechaty-events";
 import { chat, dingDongBot } from "./chat";
-import { isFromSelf, isWrongMessageType } from "./utils";
+import { createGroups } from "./football";
 import { getLanguageHelp } from "./language_help";
+import { isFromSelf, isWrongMessageType } from "./utils";
 
 const puppet = new PuppetPadlocal({
   token: process.env["PADLOCAL_TOKEN"],
@@ -16,6 +17,7 @@ const onMessage: WechatyEventListenerMessage = async (message) => {
   if (isFromSelf(message)) return;
   dingDongBot(message);
   getLanguageHelp(message);
+  createGroups(message)
   chat(message);
 };
 

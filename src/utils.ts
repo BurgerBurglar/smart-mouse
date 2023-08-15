@@ -1,7 +1,7 @@
 import { Message } from "wechaty";
-import { MessageType } from "./types";
-import { CONFIG, REPLACE_STRINGS_MAP } from "./config";
+import { REPLACE_STRINGS_MAP } from "./config";
 import { addMessages } from "./context";
+import { MessageType } from "./types";
 
 export const getPrompt = (message: Message) => {
   if (message.type() === MessageType.Text)
@@ -85,3 +85,30 @@ export const say = (message: Message, content: string) => {
     { role: "assistant", content: output },
   ]);
 };
+
+const splitOnFirstOccurence = (str: string, splitBy: string) => {
+  if (!str.includes(splitBy)) return ""
+  const firstOccurenceIndex = str.indexOf(splitBy)
+  return [
+    str.substring(0, firstOccurenceIndex),
+    str.substring(firstOccurenceIndex + 1),
+  ]
+}
+
+export const parseQuotedMessages = (message: Message) => {
+  const content = message.text()
+  const SPLIT_BY = "- - - - - - - - - - - - - - -"
+  if (!content.includes(SPLIT_BY)) {
+    return {
+      quoted: null,
+      orignal: content,
+    }
+  } else {
+    const [quotedRaw, orignal] = splitOnFirstOccurence(content, SPLIT_BY)
+    const quoted = splitOnFirstOccurence(quotedRaw, "：")[1].trim().slice(0, -1)
+    return {
+      quoted,
+      orignal,
+    }
+  }
+}
