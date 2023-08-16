@@ -54,7 +54,8 @@ export const isPersonalMessage = async (message: Message) => {
   if (isTickleMe(message)) return true;
   if (message.type() === MessageType.Text) {
     return (
-      (await message.mentionSelf()) ||
+      ((await message.mentionSelf()) &&
+        !["@All", "所有人"].some((str) => message.text().includes(str))) ||
       removeQuoting(message).includes(`@${message.wechaty.currentUser.name()}`)
     );
   }
@@ -87,28 +88,30 @@ export const say = (message: Message, content: string) => {
 };
 
 const splitOnFirstOccurence = (str: string, splitBy: string) => {
-  if (!str.includes(splitBy)) return ""
-  const firstOccurenceIndex = str.indexOf(splitBy)
+  if (!str.includes(splitBy)) return "";
+  const firstOccurenceIndex = str.indexOf(splitBy);
   return [
     str.substring(0, firstOccurenceIndex),
     str.substring(firstOccurenceIndex + 1),
-  ]
-}
+  ];
+};
 
 export const parseQuotedMessages = (message: Message) => {
-  const content = message.text()
-  const SPLIT_BY = "- - - - - - - - - - - - - - -"
+  const content = message.text();
+  const SPLIT_BY = "- - - - - - - - - - - - - - -";
   if (!content.includes(SPLIT_BY)) {
     return {
       quoted: null,
       orignal: content,
-    }
+    };
   } else {
-    const [quotedRaw, orignal] = splitOnFirstOccurence(content, SPLIT_BY)
-    const quoted = splitOnFirstOccurence(quotedRaw, "：")[1].trim().slice(0, -1)
+    const [quotedRaw, orignal] = splitOnFirstOccurence(content, SPLIT_BY);
+    const quoted = splitOnFirstOccurence(quotedRaw, "：")[1]
+      .trim()
+      .slice(0, -1);
     return {
       quoted,
       orignal,
-    }
+    };
   }
-}
+};
