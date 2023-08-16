@@ -189,7 +189,8 @@ export const AI_CONFIG = {
 export const FOOTBALL_GROUP_CONFIG = {
   allowedRooms: [
     "周四足球夜场-集资记账only",
-    "周四周日快乐足球"
+    "周四周日快乐足球",
+    "足球分组机器人",
   ],
   triggers: {
     quoted: "#接龙",
