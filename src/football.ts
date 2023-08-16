@@ -2,6 +2,8 @@ import { Message } from "wechaty";
 import { FOOTBALL_GROUP_CONFIG } from "./config";
 import { parseQuotedMessages, say } from "./utils";
 
+const REGEX_ADDED_PLAYERS = /\+\s*\d+/
+
 const shuffle = <T>(list: T[]) =>
   list
     .map((value) => ({ value, sort: Math.random() }))
@@ -21,19 +23,36 @@ const shouldGroup = async (message: Message) => {
 
 const getPlayerNames = (content: string) => {
   const REGEX_ORDERED_LIST_ITEM = /\d+\. /;
-  const names = content
-    .split("\n")
-    .filter((line) => line && REGEX_ORDERED_LIST_ITEM.test(line))
-    .map((line) => line.replace(REGEX_ORDERED_LIST_ITEM, ""));
+  const names: string[] = []
+  for (const line of content.split("\n")) {
+    if (!REGEX_ORDERED_LIST_ITEM.test(line)) continue
+    const lineContent = line.replace(REGEX_ORDERED_LIST_ITEM, "")
+    if (!REGEX_ADDED_PLAYERS.test(line)) {
+      names.push(lineContent)
+      continue
+    }
+    const name = lineContent.replace(REGEX_ADDED_PLAYERS, "")
+    names.push(`${name} - ${FOOTBALL_GROUP_CONFIG.plusPlayersName} master`)
+    const numAddedPlayer = parseInt(lineContent.split("+").slice(-1)[0])
+    if (numAddedPlayer < 1) continue;
+
+    for (let i = 1; i <= numAddedPlayer; i++) {
+      names.push(`${name}'s ${FOOTBALL_GROUP_CONFIG.plusPlayersName} ${i}`)
+    }
+  }
   return names;
 };
 
-const splitPlayersPreGrouped = (players: string[]) => {
+const splitPlayers = (players: string[]) => {
+  const playersWithPluses: string[] = [];
   const playersPreGrouped: string[] = [];
   const playersOthers: string[] = [];
 
   for (const playerName of players) {
-    if (
+    // TODO: this is a hack. change into parsing text in the future.
+    if (playerName.includes(FOOTBALL_GROUP_CONFIG.plusPlayersName)) {
+      playersWithPluses.push(playerName);
+    } else if (
       FOOTBALL_GROUP_CONFIG.playerNamesPreGrouped.some((partialName) =>
         playerName.includes(partialName)
       )
@@ -44,6 +63,7 @@ const splitPlayersPreGrouped = (players: string[]) => {
     }
   }
   return {
+    playersWithPluses,
     playersPreGrouped,
     playersOthers,
   };
@@ -72,9 +92,10 @@ const groupListOfPlayers = (
 const groupAllPlayers = (players: string[], numGroups: number) => {
   const numPlayersPerGroup = Math.floor(players.length / numGroups);
   const groups: string[][] = [[]];
-  const { playersPreGrouped, playersOthers } = splitPlayersPreGrouped(players);
-  groupListOfPlayers(groups, playersPreGrouped, numPlayersPerGroup);
+  const { playersWithPluses, playersPreGrouped, playersOthers } = splitPlayers(players);
+  groupListOfPlayers(groups, playersWithPluses, numPlayersPerGroup);
   groupListOfPlayers(groups, playersOthers, numPlayersPerGroup);
+  groupListOfPlayers(groups, playersPreGrouped, numPlayersPerGroup);
   let result =
     "Quack quack, the groups are made! Please find your shirt color as below:\n\n";
   const shuffledGroups = shuffle(groups);

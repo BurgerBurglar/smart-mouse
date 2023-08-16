@@ -239,4 +239,5 @@ export const FOOTBALL_GROUP_CONFIG = {
   ],
   numGroupUndefinedError: `${BOT_NAME}头晕了，不知道应该分成几组哦，你去问靠谱吧。`,
   maxNumGroups: 5,
+  plusPlayersName: "minion"
 }
