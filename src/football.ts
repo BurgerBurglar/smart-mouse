@@ -76,10 +76,11 @@ const groupListOfPlayers = (
 ) => {
   const shuffledPlayers = shuffle(players);
   while (shuffledPlayers.length) {
-    const lastGroup = groups[groups.length - 1];
+    let lastGroup = groups[groups.length - 1];
     if (lastGroup.length >= numPlayersPerGroup) {
       // lastGroup is full, create a new group
       groups.push([]);
+      lastGroup = groups[groups.length - 1];
     }
     // lastGroup not full yet
     const player = shuffledPlayers.shift();
@@ -90,7 +91,7 @@ const groupListOfPlayers = (
 };
 
 const groupAllPlayers = (players: string[], numGroups: number) => {
-  const numPlayersPerGroup = Math.floor(players.length / numGroups);
+  const numPlayersPerGroup = Math.ceil(players.length / numGroups);
   const groups: string[][] = [[]];
   const { playersWithPluses, playersPreGrouped, playersOthers } = splitPlayers(players);
   groupListOfPlayers(groups, playersWithPluses, numPlayersPerGroup);
