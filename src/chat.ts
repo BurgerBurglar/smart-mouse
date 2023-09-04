@@ -1,7 +1,7 @@
 import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
 import { AI_CONFIG } from "./config";
-import { isPersonalMessage, getPrompt, randomChoice, say } from "./utils";
+import { getPrompt, randomChoice, say, shouldChat } from "./utils";
 import { context } from "./context";
 
 export const dingDongBot = (message: Message) => {
@@ -18,7 +18,7 @@ export const getRoomConfig = (roomTopic: string) => {
 };
 
 export const chat = async (message: Message) => {
-  if (!(await isPersonalMessage(message))) return;
+  if (!(await shouldChat(message))) return;
 
   const room = message.room();
   if (!room) return;

@@ -2,9 +2,16 @@ import { GroupAiConfig } from "./types";
 
 const BOT_NAME = "鸭鸭";
 
-export const CONFIG = {
-  my_handle: "田鼠机器人",
-};
+export const RANDOM_MESSAGE_REPLY = {
+  probability: 0.01,
+  groups: [
+    "皇马upup2.0",
+    "索尼弟子说真相5",
+    "調查兵團第一O一期訓練生🇺🇸",
+    "周日烧烤",
+  ],
+  lengthThreshold: 10
+}
 
 export const REPLACE_STRINGS_MAP = [
   { source: "呀", target: "鸭" },

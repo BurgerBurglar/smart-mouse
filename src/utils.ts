@@ -1,5 +1,5 @@
 import { Message } from "wechaty";
-import { REPLACE_STRINGS_MAP } from "./config";
+import { RANDOM_MESSAGE_REPLY, REPLACE_STRINGS_MAP } from "./config";
 import { addMessages } from "./context";
 import { MessageType } from "./types";
 
@@ -49,7 +49,7 @@ export const isWrongMessageType = (message: Message) =>
 const removeQuoting = (message: Message) =>
   message.text().replace(/.*\n- - - - - - - - - - - - - - -\n/, "");
 
-export const isPersonalMessage = async (message: Message) => {
+const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
   if (message.type() === MessageType.Text) {
@@ -60,6 +60,16 @@ export const isPersonalMessage = async (message: Message) => {
     );
   }
   return false;
+};
+
+export const shouldChat = async (message: Message) => {
+  if (await isPersonalMessage(message)) return true;
+  const roomTopic = await message.room()?.topic();
+  if (!roomTopic) return false;
+  if (!RANDOM_MESSAGE_REPLY.groups.includes(roomTopic)) return false;
+  const messageLength = message.text().length;
+  if (RANDOM_MESSAGE_REPLY.lengthThreshold > messageLength) return false;
+  return Math.random() < RANDOM_MESSAGE_REPLY.probability;
 };
 
 const finalizeOutput = (output: string) => {
