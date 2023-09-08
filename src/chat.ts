@@ -1,7 +1,13 @@
 import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
-import { AI_CONFIG } from "./config";
-import { isPersonalMessage, getPrompt, randomChoice, say } from "./utils";
+import { AI_CONFIG, GAMES, STRING_TO_REPLACE_GAMES } from "./config";
+import {
+  isPersonalMessage,
+  getPrompt,
+  randomChoice,
+  say,
+  getMultipleRandomValues,
+} from "./utils";
 import { context } from "./context";
 
 export const dingDongBot = (message: Message) => {
@@ -43,9 +49,15 @@ export const chat = async (message: Message) => {
         ...message,
         content: message.content?.substring(AI_CONFIG.maxContextLength),
       }));
+      const realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
+        ? initialPrompt.replaceAll(
+          STRING_TO_REPLACE_GAMES,
+          getMultipleRandomValues(GAMES, 3).join("、")
+        )
+        : initialPrompt;
       const response = await getResponse({
         prompt,
-        initialPrompt,
+        initialPrompt: realInitialPrompt,
         previousMessages,
       });
       if (!response) continue;
