@@ -16,6 +16,8 @@ export const RANDOM_MESSAGE_REPLY = {
 export const REPLACE_STRINGS_MAP = [
   { source: "呀", target: "鸭" },
   { source: "农", target: "衣" },
+  { source: "湛", target: "甚" },
+  { source: "辗", target: "碾" },
 ];
 
 export const GAMES = [
