@@ -3,7 +3,8 @@ import { GroupAiConfig } from "./types";
 const BOT_NAME = "鸭鸭";
 
 export const RANDOM_MESSAGE_REPLY = {
-  probability: 0.01,
+  probability: 0.02,
+  ageLimitInSeconds: 60,
   groups: [
     "皇马upup2.0",
     "索尼弟子说真相5",

@@ -69,6 +69,7 @@ export const shouldChat = async (message: Message) => {
   if (!RANDOM_MESSAGE_REPLY.groups.includes(roomTopic)) return false;
   const messageLength = message.text().length;
   if (RANDOM_MESSAGE_REPLY.lengthThreshold > messageLength) return false;
+  if (message.age() > RANDOM_MESSAGE_REPLY.ageLimitInSeconds) return false;
   return Math.random() < RANDOM_MESSAGE_REPLY.probability;
 };
 
