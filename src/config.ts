@@ -2,7 +2,7 @@ import { GroupAiConfig } from "./types";
 
 export const BOT_NAME = "鸭鸭";
 
-export const TICKLE_PROMPT = `我拍了拍${BOT_NAME}的鸭脖`
+export const TICKLE_PROMPT = `我拍了拍${BOT_NAME}的鸭脖`;
 
 export const RANDOM_MESSAGE_REPLY = {
   probability: 0.02,
@@ -13,8 +13,8 @@ export const RANDOM_MESSAGE_REPLY = {
     "調查兵團第一O一期訓練生🇺🇸",
     "周日烧烤",
   ],
-  lengthThreshold: 10
-}
+  lengthThreshold: 10,
+};
 
 export const REPLACE_STRINGS_MAP = [
   { source: "呀", target: "鸭" },
@@ -64,9 +64,9 @@ export const GAMES = [
   "马里奥大乱斗",
   "猎天使魔女",
   "马里奥赛车",
-]
+];
 
-export const STRING_TO_REPLACE_GAMES = "{{GAMES}}"
+export const STRING_TO_REPLACE_GAMES = "{{GAMES}}";
 
 const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   default: {
@@ -219,7 +219,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       `${BOT_NAME}不知道哦，你去问靠谱吧。`,
       `${BOT_NAME}不知道哦，你去加拿大问大壮吧。`,
     ],
-  }
+  },
 };
 
 export const LANGUAGE_HELP_CONFIG = {
@@ -233,11 +233,11 @@ export const LANGUAGE_HELP_CONFIG = {
 };
 
 export const AI_CONFIG = {
-  maxInputLength: 200,
-  maxTokens: 500,
-  maxContextLength: 30,
+  maxInputLength: 500,
+  maxTokens: 1500,
+  maxContextLength: 500,
   maxRetries: 3,
-  maxContextMessages: 2,
+  maxContextMessages: 5,
   badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
   groups: GROUP_AI_CONFIGS,
 };
@@ -288,13 +288,8 @@ export const FOOTBALL_GROUP_CONFIG = {
     "Chunchu Kim",
     "shawn孙",
   ],
-  groupColors: [
-    "Red🔴/Orange🍊",
-    "White⚪",
-    "Blue🔵/Black⚫",
-    "Yellow🟡",
-  ],
+  groupColors: ["Red🔴/Orange🍊", "White⚪", "Blue🔵/Black⚫", "Yellow🟡"],
   numGroupUndefinedError: `${BOT_NAME}头晕了，不知道应该分成几组哦，你去问靠谱吧。`,
   maxNumGroups: 5,
-  plusPlayersName: "minion"
-}
+  plusPlayersName: "minion",
+};
