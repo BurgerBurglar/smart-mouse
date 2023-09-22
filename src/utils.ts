@@ -1,5 +1,5 @@
 import { Message } from "wechaty";
-import { RANDOM_MESSAGE_REPLY, REPLACE_STRINGS_MAP } from "./config";
+import { BOT_NAME, RANDOM_MESSAGE_REPLY, REPLACE_STRINGS_MAP } from "./config";
 import { addMessages } from "./context";
 import { MessageType } from "./types";
 
@@ -52,14 +52,19 @@ const removeQuoting = (message: Message) =>
 const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
-  if (message.type() === MessageType.Text) {
-    return (
-      ((await message.mentionSelf()) &&
-        !["@All", "所有人"].some((str) => message.text().includes(str))) ||
-      removeQuoting(message).includes(`@${message.wechaty.currentUser.name()}`)
-    );
-  }
-  return false;
+  if (message.type() !== MessageType.Text) return false
+
+  const userHandle = `@${message.wechaty.currentUser.name()}`;
+  const isNameIncluded = [userHandle, BOT_NAME].some((str) =>
+    removeQuoting(message).includes(str)
+  );
+  if (isNameIncluded) return true;
+
+  const isMentioned = await message.mentionSelf();
+  const isMentionAll = ["@All", "@所有人"].some((str) =>
+    removeQuoting(message).includes(str)
+  );
+  return isMentioned && !isMentionAll;
 };
 
 export const shouldChat = async (message: Message) => {
@@ -130,4 +135,4 @@ export const parseQuotedMessages = (message: Message) => {
 export const getMultipleRandomValues = <T>(arr: T[], num: number) => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, num);
-}
+};

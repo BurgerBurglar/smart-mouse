@@ -1,6 +1,6 @@
 import { GroupAiConfig } from "./types";
 
-const BOT_NAME = "鸭鸭";
+export const BOT_NAME = "鸭鸭";
 
 export const RANDOM_MESSAGE_REPLY = {
   probability: 0.02,
