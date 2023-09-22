@@ -1,5 +1,10 @@
 import { Message } from "wechaty";
-import { BOT_NAME, RANDOM_MESSAGE_REPLY, REPLACE_STRINGS_MAP } from "./config";
+import {
+  BOT_NAME,
+  RANDOM_MESSAGE_REPLY,
+  REPLACE_STRINGS_MAP,
+  TICKLE_PROMPT,
+} from "./config";
 import { addMessages } from "./context";
 import { MessageType } from "./types";
 
@@ -9,7 +14,7 @@ export const getPrompt = (message: Message) => {
       .text()
       .replaceAll(/@\S*\s/g, "")
       .trim();
-  else if (isTickle(message)) return "你好鸭";
+  else if (isTickle(message)) return TICKLE_PROMPT;
   else throw Error("Only allows tickle and text messages");
 };
 
@@ -52,7 +57,7 @@ const removeQuoting = (message: Message) =>
 const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
-  if (message.type() !== MessageType.Text) return false
+  if (message.type() !== MessageType.Text) return false;
 
   const userHandle = `@${message.wechaty.currentUser.name()}`;
   const isNameIncluded = [userHandle, BOT_NAME].some((str) =>

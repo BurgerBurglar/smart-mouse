@@ -2,6 +2,8 @@ import { GroupAiConfig } from "./types";
 
 export const BOT_NAME = "鸭鸭";
 
+export const TICKLE_PROMPT = `我拍了拍${BOT_NAME}的鸭脖`
+
 export const RANDOM_MESSAGE_REPLY = {
   probability: 0.02,
   ageLimitInSeconds: 60,
