@@ -2,7 +2,13 @@ import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
 import { AI_CONFIG, GAMES, STRING_TO_REPLACE_GAMES } from "./config";
 import { context } from "./context";
-import { getMultipleRandomValues, getPrompt, randomChoice, say, shouldChat } from "./utils";
+import {
+  getMultipleRandomValues,
+  getPrompt,
+  randomChoice,
+  say,
+  shouldChat,
+} from "./utils";
 
 export const dingDongBot = (message: Message) => {
   const isDirectMessageToMe = message.listener()?.self();
@@ -34,7 +40,7 @@ export const chat = async (message: Message) => {
 
   try {
     for (let i = 0; i < AI_CONFIG.maxRetries; i++) {
-      const prompt = getPrompt(message);
+      const prompt = await getPrompt(message);
       if (prompt.length > AI_CONFIG.maxInputLength) {
         say(message, errorResponsePromptTooLong);
         return;
@@ -45,9 +51,9 @@ export const chat = async (message: Message) => {
       }));
       const realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
         ? initialPrompt.replaceAll(
-          STRING_TO_REPLACE_GAMES,
-          getMultipleRandomValues(GAMES, 3).join("、")
-        )
+            STRING_TO_REPLACE_GAMES,
+            getMultipleRandomValues(GAMES, 3).join("、")
+          )
         : initialPrompt;
       const response = await getResponse({
         prompt,

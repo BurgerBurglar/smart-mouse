@@ -1,8 +1,8 @@
 import { Message } from "wechaty";
 import { FOOTBALL_GROUP_CONFIG } from "./config";
-import { parseQuotedMessages, say } from "./utils";
+import { parseQuotedMessage, say } from "./utils";
 
-const REGEX_ADDED_PLAYERS = /\+\s*\d+/
+const REGEX_ADDED_PLAYERS = /\+\s*\d+/;
 
 const shuffle = <T>(list: T[]) =>
   list
@@ -14,30 +14,30 @@ const shouldGroup = async (message: Message) => {
   const topic = await message.room()?.topic();
   if (!topic || !FOOTBALL_GROUP_CONFIG.allowedRooms.includes(topic))
     return false;
-  const { quoted, orignal } = parseQuotedMessages(message);
+  const { quotedContent, original } = parseQuotedMessage(message);
   return (
-    quoted?.startsWith(FOOTBALL_GROUP_CONFIG.triggers.quoted) &&
-    orignal.includes(FOOTBALL_GROUP_CONFIG.triggers.original)
+    quotedContent?.startsWith(FOOTBALL_GROUP_CONFIG.triggers.quoted) &&
+    original.includes(FOOTBALL_GROUP_CONFIG.triggers.original)
   );
 };
 
 const getPlayerNames = (content: string) => {
   const REGEX_ORDERED_LIST_ITEM = /\d+\. /;
-  const names: string[] = []
+  const names: string[] = [];
   for (const line of content.split("\n")) {
-    if (!REGEX_ORDERED_LIST_ITEM.test(line)) continue
-    const lineContent = line.replace(REGEX_ORDERED_LIST_ITEM, "")
+    if (!REGEX_ORDERED_LIST_ITEM.test(line)) continue;
+    const lineContent = line.replace(REGEX_ORDERED_LIST_ITEM, "");
     if (!REGEX_ADDED_PLAYERS.test(line)) {
-      names.push(lineContent)
-      continue
+      names.push(lineContent);
+      continue;
     }
-    const name = lineContent.replace(REGEX_ADDED_PLAYERS, "")
-    names.push(`${name} - ${FOOTBALL_GROUP_CONFIG.plusPlayersName} master`)
-    const numAddedPlayer = parseInt(lineContent.split("+").slice(-1)[0])
+    const name = lineContent.replace(REGEX_ADDED_PLAYERS, "");
+    names.push(`${name} - ${FOOTBALL_GROUP_CONFIG.plusPlayersName} master`);
+    const numAddedPlayer = parseInt(lineContent.split("+").slice(-1)[0]);
     if (numAddedPlayer < 1) continue;
 
     for (let i = 1; i <= numAddedPlayer; i++) {
-      names.push(`${name}'s ${FOOTBALL_GROUP_CONFIG.plusPlayersName} ${i}`)
+      names.push(`${name}'s ${FOOTBALL_GROUP_CONFIG.plusPlayersName} ${i}`);
     }
   }
   return names;
@@ -93,7 +93,8 @@ const groupListOfPlayers = (
 const groupAllPlayers = (players: string[], numGroups: number) => {
   const numPlayersPerGroup = Math.ceil(players.length / numGroups);
   const groups: string[][] = [[]];
-  const { playersWithPluses, playersPreGrouped, playersOthers } = splitPlayers(players);
+  const { playersWithPluses, playersPreGrouped, playersOthers } =
+    splitPlayers(players);
   groupListOfPlayers(groups, playersWithPluses, numPlayersPerGroup);
   groupListOfPlayers(groups, playersOthers, numPlayersPerGroup);
   groupListOfPlayers(groups, playersPreGrouped, numPlayersPerGroup);
@@ -141,9 +142,9 @@ const getNumGroups = (content: string) => {
 
 export const createGroups = async (message: Message) => {
   if (!(await shouldGroup(message))) return;
-  const { quoted, orignal } = parseQuotedMessages(message);
-  const players = getPlayerNames(quoted!);
-  const numGroups = getNumGroups(orignal);
+  const { quotedContent, original } = parseQuotedMessage(message);
+  const players = getPlayerNames(quotedContent!);
+  const numGroups = getNumGroups(original);
   if (!numGroups) {
     say(message, FOOTBALL_GROUP_CONFIG.numGroupUndefinedError);
     return;
