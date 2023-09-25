@@ -128,7 +128,7 @@ export const say = async (message: Message, content: string) => {
 };
 
 const splitOnFirstOccurence = (str: string, splitBy: string) => {
-  if (!str.includes(splitBy)) return "";
+  if (!str.includes(splitBy)) return [str, ""];
   const firstOccurenceIndex = str.indexOf(splitBy);
   return [
     str.substring(0, firstOccurenceIndex),
@@ -147,6 +147,13 @@ export const parseQuotedMessage = (message: Message) => {
     };
   } else {
     const [quotedRaw, original] = splitOnFirstOccurence(content, SPLIT_BY);
+    if (!quotedRaw.includes("：")) {
+      return {
+        quotedTalker: null,
+        quotedContent: null,
+        original,
+      };
+    }
     let [quotedTalker, quotedContent] = splitOnFirstOccurence(quotedRaw, "：");
     quotedTalker = quotedTalker.trim().slice(1);
     quotedContent = quotedContent.slice(0, -1);
