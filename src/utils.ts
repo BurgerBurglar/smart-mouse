@@ -1,5 +1,6 @@
 import { Message } from "wechaty";
 import {
+  AI_CONFIG,
   BOT_NAME,
   RANDOM_MESSAGE_REPLY,
   REPLACE_STRINGS_MAP,
@@ -20,6 +21,11 @@ const getTalkerName = async (message: Message) => {
   const room = message.room();
   const talker = getTalker(message);
   if (!talker) return;
+
+  const talkerName = talker.name();
+  const talkerAlias = AI_CONFIG.nameMap[talkerName];
+  if (talkerAlias) return talkerAlias;
+
   if (!room) return talker.name();
   const alias = await room.alias(talker);
   return alias ?? talker.name();
