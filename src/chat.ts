@@ -45,9 +45,9 @@ export const chat = async (message: Message) => {
         say(message, errorResponsePromptTooLong);
         return;
       }
-      const previousMessages = context[room.id]?.map((message) => ({
-        ...message,
-        content: message.content?.substring(AI_CONFIG.maxContextLength),
+      const previousMessages = context[room.id]?.map((msg) => ({
+        ...msg,
+        content: msg.content?.substring(0, AI_CONFIG.maxContextLength),
       }));
       const realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
         ? initialPrompt.replaceAll(

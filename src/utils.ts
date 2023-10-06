@@ -43,7 +43,11 @@ export const getPrompt = async (message: Message) => {
     const userHandle = getUserHandle(message);
     const originalPromptBody = original.replaceAll(userHandle, "").trim();
     const prefix = talkerName ? talkerName + "：" : "";
-    const prompt = (quotedPrompt + "\n" + prefix + originalPromptBody).trim();
+    let prompt = prefix + originalPromptBody;
+    if (quotedPrompt) {
+      prompt = quotedPrompt + "\n" + prompt;
+    }
+    prompt = prompt.trim();
     return prompt;
   } else throw Error("Only allows tickle and text messages");
 };
