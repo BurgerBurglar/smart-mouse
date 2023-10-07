@@ -103,6 +103,7 @@ const isPersonalMessage = async (message: Message) => {
 
 export const shouldChat = async (message: Message) => {
   if (await isPersonalMessage(message)) return true;
+  if (message.type() !== MessageType.Text) return false;
   const roomTopic = await message.room()?.topic();
   if (!roomTopic) return false;
   if (!RANDOM_MESSAGE_REPLY.groups.includes(roomTopic)) return false;
