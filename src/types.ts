@@ -21,14 +21,14 @@ export enum MessageType {
   Post = 16, // Moment, Channel, Tweet, etc
 }
 
-export type GroupAiConfig =
-  {
-    initialPrompt: string;
-    errorResponsePromptTooLong: string;
-    errorResponse429: string;
-    errorResponseGeneral: string;
-    badRequestReplies: string[];
-  };
+export type GroupAiConfig = {
+  initialPrompt: string;
+  errorResponsePromptTooLong: string;
+  errorResponse429: string;
+  errorResponseGeneral: string;
+  badRequestReplies: string[];
+  alias?: string;
+};
 
 export interface getResponseProps {
   prompt: string;

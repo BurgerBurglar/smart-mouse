@@ -83,16 +83,29 @@ export const isWrongMessageType = (message: Message) =>
 const removeQuoting = (message: Message) =>
   parseQuotedMessage(message).original;
 
+const isNameIncluded = async (message: Message) => {
+  const room = message.room();
+  if (!room) return false;
+  const userHandle = getUserHandle(message);
+  const names = [userHandle, BOT_NAME];
+
+  const roomTopic = await room.topic();
+  const alias = AI_CONFIG.groups[roomTopic]?.alias;
+  if (alias) {
+    names.push(alias);
+  }
+
+  const messageOrignal = removeQuoting(message);
+  return names.some((str) => messageOrignal.includes(str));
+};
+
 const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
   if (message.type() !== MessageType.Text) return false;
 
   const userHandle = getUserHandle(message);
-  const isNameIncluded = [userHandle, BOT_NAME].some((str) =>
-    removeQuoting(message).includes(str)
-  );
-  if (isNameIncluded) return true;
+  if (await isNameIncluded(message)) return true;
 
   const isMentioned = await message.mentionSelf();
   const isMentionAll = ["@All", "@所有人"].some((str) =>
