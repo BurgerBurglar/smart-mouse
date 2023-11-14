@@ -3,6 +3,7 @@ import { getResponse } from "./ai";
 import { AI_CONFIG, LANGUAGE_HELP_CONFIG } from "./config";
 import { say } from "./utils";
 import { MessageType } from "./types";
+import { getRoomConfig } from "./chat";
 
 const getComposition = (message: Message) =>
   message
@@ -21,13 +22,30 @@ const shouldDoLanguageHelp = async (message: Message) => {
 
 export const getLanguageHelp = async (message: Message) => {
   if (!(await shouldDoLanguageHelp(message))) return;
-  const response = await getResponse({
-    prompt: getComposition(message),
-    initialPrompt: LANGUAGE_HELP_CONFIG.initialPrompt,
-  });
-  if (!response) {
-    say(message, AI_CONFIG.groups["default"].errorResponseGeneral);
-    return;
+  const room = message.room();
+  if (!room) return;
+  const roomTopic = await room.topic();
+
+  const { errorResponse429, errorResponseGeneral } = getRoomConfig(roomTopic);
+  try {
+    for (let i = 0; i < AI_CONFIG.maxRetries; i++) {
+      const response = await getResponse({
+        prompt: getComposition(message),
+        initialPrompt: LANGUAGE_HELP_CONFIG.initialPrompt,
+      });
+      if (!response) {
+        say(message, AI_CONFIG.groups["default"].errorResponseGeneral);
+        return;
+      }
+      say(message, response);
+      return;
+    }
+  } catch (error: any) {
+    console.error(error);
+    if (error?.response?.status === 429) {
+      say(message, errorResponse429);
+      return;
+    }
+    say(message, errorResponseGeneral);
   }
-  say(message, response);
 };
