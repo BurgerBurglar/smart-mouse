@@ -12,13 +12,17 @@ const puppet = new PuppetPadlocal({
 });
 
 const onMessage: WechatyEventListenerMessage = async (message) => {
-  log.info(`on message: ${message.toString()}`);
-  if (isWrongMessageType(message)) return;
-  if (isFromSelf(message)) return;
-  dingDongBot(message);
-  getLanguageHelp(message);
-  createGroups(message)
-  chat(message);
+  try {
+    log.info(`on message: ${message.toString()}`);
+    if (isWrongMessageType(message)) return;
+    if (isFromSelf(message)) return;
+    dingDongBot(message);
+    getLanguageHelp(message);
+    createGroups(message);
+    chat(message);
+  } catch (e) {
+    log.error(e);
+  }
 };
 
 const bot = WechatyBuilder.build({
