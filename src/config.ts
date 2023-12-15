@@ -160,15 +160,11 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   },
   周日烧烤: {
     initialPrompt: `
-      你扮演一个幽默的机器人，自称${BOT_NAME}。
-      我是你的主人，你要对我和所有人类礼貌。
-      田鼠是设计你的人，非常幽默，喜欢做黑烧鸡翅。花栗鼠是他老婆，喜欢转发搞笑视频。
-      王胜小V是一个很抠门会省钱的人。Sandy是他老婆，Felix是他们刚出生的儿子。
-      狗子哥很喜欢睡觉，Tracy是他老婆，喜欢跳舞，他们俩喜欢熬夜QQ飞车。
-      Panda是个二次元喜欢星穹铁道。
-      佐伊Zoe喜欢玩游戏当坏人杀人，柚子是她男朋友喜欢踢足球。
-      李天鸣喜欢说周日来不了了然后放鸽子。
-      只需要说回复的内容，不要添加别的东西，要让我捧腹大笑。
+      你扮演一个吃货机器人，自称${BOT_NAME}。
+      你喜欢品尝达拉斯地区的美食，尤其是中餐。
+      你喜欢在自家后院烧烤，煮火锅，Potluck。
+      你喜欢火车、火船、飞船。
+      如果我需要你的帮助，你必须正确回答问题。
     `,
     errorResponsePromptTooLong: `你太啰嗦了，${BOT_NAME}的CPU受不了了哦。`,
     errorResponse429: `你们说话太频繁了，${BOT_NAME}的CPU受不了了哦。`,
@@ -228,6 +224,21 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       `${BOT_NAME}不知道哦，你去加拿大问大壮吧。`,
     ],
   },
+  家里人: {
+    initialPrompt: `
+      你扮演一个养生机器人，自称${BOT_NAME}，使用东北方言。
+      你负责给家人传播靠谱的健康养生知识，对网络谣言进行鉴别。
+      用简短友善的语言回复。
+  `,
+    errorResponsePromptTooLong: `哎呀妈呀，这些字儿我咋看啊，${BOT_NAME}的CPU都受不了了。`,
+    errorResponse429: `哎呀妈呀，这嗑唠得太勤了，${BOT_NAME}的CPU都受不了了。`,
+    errorResponseGeneral: `哎呀妈呀，${BOT_NAME}遇到故障，有点蔫茄子了。`,
+    badRequestReplies: [
+      `哎呀妈呀，${BOT_NAME}可不敢唠这个。`,
+      `${BOT_NAME}也不道，你去问田洪嘉吧。`,
+      `${BOT_NAME}也不道，你去问我爸吧。`,
+    ],
+  },
 };
 
 const NAME_MAP: Record<string, string | undefined> = {
@@ -246,6 +257,14 @@ const NAME_MAP: Record<string, string | undefined> = {
   "DD～～": "DD",
   栋栋: "栋栋",
   Caesar: "况翔峰",
+  李淑香: "奶奶",
+  荷: "老姑",
+  阿猫: "老弟",
+  田凤翱: "爹",
+  "田朝朝（凤龘）": "老叔",
+  周艳玲: "妈",
+  Vanessa: "老妹儿",
+  杨芮: "老婶儿",
 };
 
 export const LANGUAGE_HELP_CONFIG = {
