@@ -1,3 +1,4 @@
+import OpenAI from "openai";
 import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
 import { AI_CONFIG, GAMES, STRING_TO_REPLACE_GAMES } from "./config";
@@ -47,7 +48,7 @@ export const chat = async (message: Message) => {
       }
       const previousMessages = context[room.id]?.map((msg) => ({
         ...msg,
-        content: msg.content?.substring(0, AI_CONFIG.maxContextLength),
+        content: msg.content.slice(0, AI_CONFIG.maxContextLength) as string,
       }));
       const realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
         ? initialPrompt.replaceAll(
@@ -74,9 +75,11 @@ export const chat = async (message: Message) => {
     }
   } catch (error: any) {
     console.error(error);
-    if (error?.response?.status === 429) {
-      say(message, errorResponse429);
-      return;
+    if (error instanceof OpenAI.APIError) {
+      if (error.status === 429) {
+        say(message, errorResponse429);
+        return;
+      }
     }
     say(message, errorResponseGeneral);
   }

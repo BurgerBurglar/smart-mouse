@@ -1,4 +1,4 @@
-import { ChatCompletionRequestMessage } from "openai";
+import { ChatCompletionMessageParam } from "openai/resources";
 
 export enum MessageType {
   Unknown = 0,
@@ -33,5 +33,5 @@ export type GroupAiConfig = {
 export interface getResponseProps {
   prompt: string;
   initialPrompt: string;
-  previousMessages?: ChatCompletionRequestMessage[];
+  previousMessages?: ChatCompletionMessageParam[];
 }

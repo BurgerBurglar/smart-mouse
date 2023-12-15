@@ -1,9 +1,10 @@
+import OpenAI from "openai";
 import { Message } from "wechaty";
 import { getResponse } from "./ai";
-import { AI_CONFIG, LANGUAGE_HELP_CONFIG } from "./config";
-import { say } from "./utils";
-import { MessageType } from "./types";
 import { getRoomConfig } from "./chat";
+import { AI_CONFIG, LANGUAGE_HELP_CONFIG } from "./config";
+import { MessageType } from "./types";
+import { say } from "./utils";
 
 const getComposition = (message: Message) =>
   message
@@ -42,9 +43,11 @@ export const getLanguageHelp = async (message: Message) => {
     }
   } catch (error: any) {
     console.error(error);
-    if (error?.response?.status === 429) {
-      say(message, errorResponse429);
-      return;
+    if (error instanceof OpenAI.APIError) {
+      if (error.status === 429) {
+        say(message, errorResponse429);
+        return;
+      }
     }
     say(message, errorResponseGeneral);
   }

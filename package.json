@@ -8,7 +8,7 @@
   "private": false,
   "dependencies": {
     "dotenv": "^16.3.1",
-    "openai": "^3.3.0",
+    "openai": "^4.22.0",
     "qrcode-terminal": "^0.12.0",
     "wechaty": "^1.19.10",
     "wechaty-puppet": "^1.19.6",

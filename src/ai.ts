@@ -1,28 +1,27 @@
-import { ChatCompletionRequestMessage, Configuration, OpenAIApi } from "openai";
-import { getResponseProps } from "./types";
+import OpenAI from "openai";
+import { ChatCompletionMessageParam } from "openai/resources";
 import { AI_CONFIG } from "./config";
+import { getResponseProps } from "./types";
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
-  basePath: process.env["OPEN_AI_BASE_PATH"],
 });
-const openai = new OpenAIApi(configuration);
 
 export const getResponse = async ({
   prompt,
   initialPrompt,
   previousMessages = [],
 }: getResponseProps) => {
-  const messages: ChatCompletionRequestMessage[] = [
+  const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: initialPrompt },
     ...previousMessages,
     { role: "user", content: prompt },
   ];
-  const chatCompletion = await openai.createChatCompletion({
+  const chatCompletion = await openai.chat.completions.create({
     model: "gpt-4",
     messages,
     max_tokens: AI_CONFIG.maxTokens,
   });
-  const response = chatCompletion.data.choices[0].message?.content;
+  const response = chatCompletion.choices[0].message?.content;
   return response;
 };

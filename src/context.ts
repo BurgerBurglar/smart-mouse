@@ -1,11 +1,11 @@
-import { ChatCompletionRequestMessage } from "openai";
+import { ChatCompletionMessageParam } from "openai/resources";
 import { AI_CONFIG } from "./config";
 
-export const context: Record<string, ChatCompletionRequestMessage[]> = {};
+export const context: Record<string, ChatCompletionMessageParam[]> = {};
 
 export const addMessages = (
   roomId: string,
-  messages: ChatCompletionRequestMessage[]
+  messages: ChatCompletionMessageParam[]
 ) => {
   if (!context[roomId]) {
     context[roomId] = [];
