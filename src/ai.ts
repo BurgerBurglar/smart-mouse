@@ -25,3 +25,12 @@ export const getResponse = async ({
   const response = chatCompletion.choices[0].message?.content;
   return response;
 };
+
+export const getAiDrawingUrl = async (prompt: string) => {
+  const response = await openai.images.generate({
+    prompt,
+    model: "dall-e-3",
+  });
+  const imageUrl = response.data[0].url;
+  return imageUrl;
+};

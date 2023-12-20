@@ -1,14 +1,20 @@
 import OpenAI from "openai";
 import { log, Message } from "wechaty";
 import { getResponse } from "./ai";
-import { AI_CONFIG, GAMES, STRING_TO_REPLACE_GAMES } from "./config";
-import { context } from "./context";
+import {
+  AI_CONFIG,
+  DRAW_REPLIES,
+  GAMES,
+  STRING_TO_REPLACE_GAMES,
+} from "./config";
 import {
   getMultipleRandomValues,
+  getPreviousMessages,
   getPrompt,
   randomChoice,
   say,
   shouldChat,
+  shouldDraw,
 } from "./utils";
 
 export const dingDongBot = (message: Message) => {
@@ -39,6 +45,11 @@ export const chat = async (message: Message) => {
     badRequestReplies,
   } = getRoomConfig(roomTopic);
 
+  if (await shouldDraw(message)) {
+    say(message, randomChoice(DRAW_REPLIES));
+    return;
+  }
+
   try {
     for (let i = 0; i < AI_CONFIG.maxRetries; i++) {
       const prompt = await getPrompt(message);
@@ -46,11 +57,8 @@ export const chat = async (message: Message) => {
         say(message, errorResponsePromptTooLong);
         return;
       }
-      const previousMessages = context[room.id]?.map((msg) => ({
-        ...msg,
-        content: msg.content.slice(0, AI_CONFIG.maxContextLength) as string,
-      }));
-      const realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
+      const previousMessages = getPreviousMessages(message);
+      let realInitialPrompt = initialPrompt.includes(STRING_TO_REPLACE_GAMES)
         ? initialPrompt.replaceAll(
             STRING_TO_REPLACE_GAMES,
             getMultipleRandomValues(GAMES, 3).join("、")

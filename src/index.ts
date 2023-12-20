@@ -3,6 +3,7 @@ import { log, ScanStatus, WechatyBuilder } from "wechaty";
 import { PuppetPadlocal } from "wechaty-puppet-padlocal";
 import { WechatyEventListenerMessage } from "wechaty/dist/esm/src/schemas/wechaty-events";
 import { chat, dingDongBot } from "./chat";
+import { draw } from "./draw";
 import { createGroups } from "./football";
 import { getLanguageHelp } from "./language_help";
 import { isFromSelf, isWrongMessageType } from "./utils";
@@ -17,6 +18,7 @@ const onMessage: WechatyEventListenerMessage = async (message) => {
     if (isWrongMessageType(message)) return;
     if (isFromSelf(message)) return;
     dingDongBot(message);
+    draw(message);
     getLanguageHelp(message);
     createGroups(message);
     chat(message);

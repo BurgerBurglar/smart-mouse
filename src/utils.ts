@@ -2,14 +2,15 @@ import { Message } from "wechaty";
 import {
   AI_CONFIG,
   BOT_NAME,
+  DRAW_TRIGGERS,
   RANDOM_MESSAGE_REPLY,
   REPLACE_STRINGS_MAP,
   TICKLE_PROMPT,
 } from "./config";
-import { addMessages } from "./context";
+import { addMessages, context } from "./context";
 import { MessageType } from "./types";
 
-const getUserHandle = (message: Message) =>
+export const getUserHandle = (message: Message) =>
   `@${message.wechaty.currentUser.name()}`;
 
 const getTalker = (message: Message) => {
@@ -99,7 +100,7 @@ const isNameIncluded = async (message: Message) => {
   return names.some((str) => messageOrignal.includes(str));
 };
 
-const isPersonalMessage = async (message: Message) => {
+export const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
   if (message.type() !== MessageType.Text) return false;
@@ -193,4 +194,27 @@ export const parseQuotedMessage = (message: Message) => {
 export const getMultipleRandomValues = <T>(arr: T[], num: number) => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, num);
+};
+
+export const shouldDraw = async (message: Message) => {
+  if (message.type() !== MessageType.Text) return false;
+  if (!(await isPersonalMessage(message))) return false;
+  const content = message.text();
+  if (!DRAW_TRIGGERS.some((word) => content.includes(word.toLowerCase())))
+    return false;
+  return true;
+};
+
+export const sleep = (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const getPreviousMessages = (message: Message) => {
+  const room = message.room();
+  const previousMessages =
+    context[room.id]?.map((msg) => ({
+      ...msg,
+      content: msg.content.slice(0, AI_CONFIG.maxContextLength) as string,
+    })) ?? [];
+  return previousMessages;
 };

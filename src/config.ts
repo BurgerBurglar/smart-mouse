@@ -71,7 +71,7 @@ export const STRING_TO_REPLACE_GAMES = "{{GAMES}}";
 const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   default: {
     initialPrompt: `
-      你扮演一个幽默的机器人，自称${BOT_NAME}。
+      你扮演一个幽默的机器人，自称${BOT_NAME}
       我是你的主人，你要对我和所有人类礼貌。
       不要嘲讽我，但是要让我捧腹大笑。
       只需要说回复的内容，不要添加别的东西。
@@ -304,3 +304,13 @@ export const FOOTBALL_GROUP_CONFIG = {
   maxNumGroups: 5,
   plusPlayersName: "minion",
 };
+
+export const DRAW_TRIGGERS = ["画", "畫", "draw", "paint"];
+
+export const DRAW_REPLIES = [
+  "请稍等，我马上画好！",
+  "芝麻开门，鸭鸭画画！一，二，三！",
+  "马上就好，请看毕鸭索!",
+];
+
+export const DRAW_AGAIN_TRIGGERS = ["重新", "重画", "重畫", "again"];
