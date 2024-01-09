@@ -241,7 +241,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   },
 };
 
-const NAME_MAP: Record<string, string | undefined> = {
+const NICKNAME_MAP: Record<string, string | undefined> = {
   Fabius: "爹",
   煞风景: "散委",
   "Paul-郑褚": "群主",
@@ -285,7 +285,7 @@ export const AI_CONFIG = {
   maxContextMessages: 5,
   badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
   groups: GROUP_AI_CONFIGS,
-  nameMap: NAME_MAP,
+  nicknameMap: NICKNAME_MAP,
 };
 
 export const FOOTBALL_GROUP_CONFIG = {

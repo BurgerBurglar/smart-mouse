@@ -24,25 +24,36 @@ const getTalkerName = async (message: Message) => {
   if (!talker) return;
 
   const talkerName = talker.name();
-  const talkerAlias = AI_CONFIG.nameMap[talkerName];
-  if (talkerAlias) return talkerAlias;
+  const talkerNickname = AI_CONFIG.nicknameMap[talkerName];
+  if (talkerNickname) return talkerNickname;
 
   if (!room) return talker.name();
   const alias = await room.alias(talker);
   return alias ?? talker.name();
 };
 
+const getQuotedRealName = (aliasOrName: string, name: string) => {
+  const talkerNickname = AI_CONFIG.nicknameMap[name];
+  if (talkerNickname) return talkerNickname;
+  return aliasOrName;
+};
+
 export const getPrompt = async (message: Message) => {
   const talkerName = (await getTalkerName(message)) ?? "";
   if (isTickle(message)) return talkerName + TICKLE_PROMPT;
-  else if (message.type() === MessageType.Text) {
-    const { quotedTalker, quotedContent, original } =
-      parseQuotedMessage(message);
-    const quotedPrompt = quotedTalker
-      ? `${quotedTalker}：${quotedContent}`
-      : null;
+  if (message.type() === MessageType.Text) {
+    const { quotedTalkerAlias, quotedTalkerName, quotedContent, original } =
+      await parseQuotedMessage(message);
+
+    const quotedPrompt =
+      quotedTalkerName && quotedTalkerAlias
+        ? `${getQuotedRealName(
+            quotedTalkerAlias,
+            quotedTalkerName
+          )}：${quotedContent}`
+        : null;
     const userHandle = getUserHandle(message);
-    const originalPromptBody = original.replaceAll(userHandle, "").trim();
+    const originalPromptBody = original.replace(userHandle, "").trim();
     const prefix = talkerName ? talkerName + "：" : "";
     let prompt = prefix + originalPromptBody;
     if (quotedPrompt) {
@@ -50,7 +61,8 @@ export const getPrompt = async (message: Message) => {
     }
     prompt = prompt.trim();
     return prompt;
-  } else throw Error("Only allows tickle and text messages");
+  }
+  throw Error("Only allows tickle and text messages");
 };
 
 export const isFromSelf = (message: Message) => {
@@ -81,8 +93,8 @@ export const isTickleMe = (message: Message) => {
 export const isWrongMessageType = (message: Message) =>
   ![MessageType.Text, MessageType.Recalled].includes(message.type());
 
-const removeQuoting = (message: Message) =>
-  parseQuotedMessage(message).original;
+const removeQuoting = async (message: Message) =>
+  (await parseQuotedMessage(message)).original;
 
 const isNameIncluded = async (message: Message) => {
   const room = message.room();
@@ -96,7 +108,7 @@ const isNameIncluded = async (message: Message) => {
     names.push(alias);
   }
 
-  const messageOrignal = removeQuoting(message);
+  const messageOrignal = await removeQuoting(message);
   return names.some((str) => messageOrignal.includes(str));
 };
 
@@ -109,8 +121,8 @@ export const isPersonalMessage = async (message: Message) => {
   if (await isNameIncluded(message)) return true;
 
   const isMentioned = await message.mentionSelf();
-  const isMentionAll = ["@All", "@所有人"].some((str) =>
-    removeQuoting(message).includes(str)
+  const isMentionAll = ["@All", "@所有人"].some(async (str) =>
+    (await removeQuoting(message)).includes(str)
   );
   return isMentioned && !isMentionAll;
 };
@@ -121,7 +133,7 @@ export const shouldChat = async (message: Message) => {
   const roomTopic = await message.room()?.topic();
   if (!roomTopic) return false;
   if (!RANDOM_MESSAGE_REPLY.groups.includes(roomTopic)) return false;
-  const { original, quotedContent } = parseQuotedMessage(message);
+  const { original, quotedContent } = await parseQuotedMessage(message);
   const messageLength = original.length + (quotedContent?.length ?? 0);
   if (RANDOM_MESSAGE_REPLY.lengthThreshold > messageLength) return false;
   if (message.age() > RANDOM_MESSAGE_REPLY.ageLimitInSeconds) return false;
@@ -162,33 +174,62 @@ const splitOnFirstOccurence = (str: string, splitBy: string) => {
   ];
 };
 
-export const parseQuotedMessage = (message: Message) => {
+export const parseQuotedMessage = async (
+  message: Message
+): Promise<{
+  quotedTalkerAlias: string | null;
+  quotedTalkerName: string | null;
+  quotedContent: string | null;
+  quotedTalkerId: string | null;
+  original: string;
+}> => {
   const content = message.text();
   const SPLIT_BY = "\n- - - - - - - - - - - - - - -\n";
   if (!content.includes(SPLIT_BY)) {
     return {
-      quotedTalker: null,
+      quotedTalkerAlias: null,
+      quotedTalkerName: null,
+      quotedTalkerId: null,
       quotedContent: null,
       original: content,
     };
-  } else {
-    const [quotedRaw, original] = splitOnFirstOccurence(content, SPLIT_BY);
-    if (!quotedRaw.includes("：")) {
-      return {
-        quotedTalker: null,
-        quotedContent: null,
-        original,
-      };
-    }
-    let [quotedTalker, quotedContent] = splitOnFirstOccurence(quotedRaw, "：");
-    quotedTalker = quotedTalker.trim().slice(1);
-    quotedContent = quotedContent.slice(0, -1);
+  }
+  const [quotedRaw, original] = splitOnFirstOccurence(content, SPLIT_BY);
+  if (!quotedRaw.includes("：")) {
     return {
-      quotedTalker,
+      quotedTalkerAlias: null,
+      quotedTalkerName: null,
+      quotedTalkerId: null,
+      quotedContent: null,
+      original,
+    };
+  }
+  let [quotedTalkerAliasOrName, quotedContent] = splitOnFirstOccurence(
+    quotedRaw,
+    "："
+  );
+  // could be a name or an Alias depending on whether it was set by the user
+  quotedTalkerAliasOrName = quotedTalkerAliasOrName.trim().slice(1);
+  quotedContent = quotedContent.slice(0, -1);
+  const room = message.room();
+  if (!room) {
+    return {
+      quotedTalkerAlias: null,
+      quotedTalkerName: quotedTalkerAliasOrName,
+      quotedTalkerId: null,
       quotedContent,
       original,
     };
   }
+  const quotedTalkerContact = await room.member(quotedTalkerAliasOrName);
+  const quotedTalkerName = quotedTalkerContact.name();
+  return {
+    quotedTalkerAlias: quotedTalkerAliasOrName,
+    quotedTalkerName,
+    quotedTalkerId: null,
+    quotedContent,
+    original,
+  };
 };
 
 export const getMultipleRandomValues = <T>(arr: T[], num: number) => {

@@ -14,7 +14,7 @@ const shouldGroup = async (message: Message) => {
   const topic = await message.room()?.topic();
   if (!topic || !FOOTBALL_GROUP_CONFIG.allowedRooms.includes(topic))
     return false;
-  const { quotedContent, original } = parseQuotedMessage(message);
+  const { quotedContent, original } = await parseQuotedMessage(message);
   return (
     quotedContent?.startsWith(FOOTBALL_GROUP_CONFIG.triggers.quoted) &&
     original.includes(FOOTBALL_GROUP_CONFIG.triggers.original)
@@ -142,7 +142,7 @@ const getNumGroups = (content: string) => {
 
 export const createGroups = async (message: Message) => {
   if (!(await shouldGroup(message))) return;
-  const { quotedContent, original } = parseQuotedMessage(message);
+  const { quotedContent, original } = await parseQuotedMessage(message);
   const players = getPlayerNames(quotedContent!);
   const numGroups = getNumGroups(original);
   if (!numGroups) {

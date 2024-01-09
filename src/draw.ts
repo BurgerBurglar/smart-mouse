@@ -15,9 +15,9 @@ import {
   sleep,
 } from "./utils";
 
-const getDrawingPrompt = (message: Message, hasHistory = false) => {
+const getDrawingPrompt = async (message: Message, hasHistory = false) => {
   const userHandle = getUserHandle(message);
-  const { original, quotedContent } = parseQuotedMessage(message);
+  const { original, quotedContent } = await parseQuotedMessage(message);
   const currentPrompt = original + quotedContent;
   let prompts = currentPrompt;
   if (hasHistory) {
@@ -44,13 +44,13 @@ export const draw = async (message: Message) => {
   const room = message.room();
   if (!room) return;
 
-  const { original } = parseQuotedMessage(message);
+  const { original } = await parseQuotedMessage(message);
   if (!DRAW_TRIGGERS.some((word) => original.includes(word.toLowerCase())))
     return;
   const hasHistory = DRAW_AGAIN_TRIGGERS.some((word) =>
     original.includes(word)
   );
-  const prompt = getDrawingPrompt(message, hasHistory);
+  const prompt = await getDrawingPrompt(message, hasHistory);
   try {
     const imageUrl = await getAiDrawingUrl(prompt);
     message.say(FileBox.fromUrl(imageUrl));
