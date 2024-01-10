@@ -2531,9 +2531,9 @@ wechaty-grpc@^1.5.2:
     google-protobuf "^3.18.0"
     stronger-typed-streams "^0.2.0"
 
-wechaty-puppet-padlocal@^1.11.18:
+wechaty-puppet-padlocal@^1.20.1:
   version "1.20.1"
-  resolved "https://registry.npmjs.org/wechaty-puppet-padlocal/-/wechaty-puppet-padlocal-1.20.1.tgz"
+  resolved "https://registry.yarnpkg.com/wechaty-puppet-padlocal/-/wechaty-puppet-padlocal-1.20.1.tgz#18585bef5d978bf855d1d79da09a0bdf13573914"
   integrity sha512-vb0SPx3Ezlph4ThW1/bkvPatCj70V9hhmWAGsmW7oCFLJPM9ugp9LWqpVisJYdGwvv3CMYpXo6OazYCEjfYC2g==
   dependencies:
     "@types/config" "0.0.41"
@@ -2633,9 +2633,9 @@ wechaty-token@^1.1.1:
     cockatiel "^2.0.2"
     uuid "^8.3.2"
 
-wechaty@^1.19.10:
+wechaty@^1.20.2:
   version "1.20.2"
-  resolved "https://registry.npmjs.org/wechaty/-/wechaty-1.20.2.tgz"
+  resolved "https://registry.yarnpkg.com/wechaty/-/wechaty-1.20.2.tgz#070133984e4e8ed1a9bae59cd0fb6c0d1d012803"
   integrity sha512-bIZ8m2lOya4SKnxVunbMGemE8JyZdnXhnLnfXtBAZV997ef6uqP4pJxuwiJnV0qbXGyIE+F3B2b8yjQOZh43lQ==
   dependencies:
     clone-class "^1.1.1"
