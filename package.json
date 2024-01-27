@@ -10,11 +10,14 @@
     "dotenv": "^16.3.1",
     "openai": "^4.22.0",
     "qrcode-terminal": "^0.12.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
     "wechaty": "^1.20.2",
     "wechaty-puppet": "^1.19.6",
     "wechaty-puppet-padlocal": "^1.20.1"
   },
   "devDependencies": {
+    "@types/sqlite3": "^3.1.11",
     "cross-env": "^7.0.3",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"

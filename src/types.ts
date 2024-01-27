@@ -30,8 +30,16 @@ export type GroupAiConfig = {
   alias?: string;
 };
 
-export interface getResponseProps {
+export interface GetResponseProps {
   prompt: string;
   initialPrompt: string;
   previousMessages?: ChatCompletionMessageParam[];
+}
+
+export interface LaughterData {
+  userId: string;
+  roomId: string;
+  laughterMessages: number;
+  humorLevel: number;
+  userAlias: string | null;
 }

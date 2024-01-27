@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { ChatCompletionMessageParam } from "openai/resources";
 import { AI_CONFIG } from "./config";
-import { getResponseProps } from "./types";
+import { GetResponseProps } from "./types";
 
 const openai = new OpenAI({
   apiKey: process.env["OPENAI_API_KEY"],
@@ -11,7 +11,7 @@ export const getResponse = async ({
   prompt,
   initialPrompt,
   previousMessages = [],
-}: getResponseProps) => {
+}: GetResponseProps) => {
   const messages: ChatCompletionMessageParam[] = [
     { role: "system", content: initialPrompt },
     ...previousMessages,

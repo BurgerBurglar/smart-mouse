@@ -314,3 +314,23 @@ export const DRAW_REPLIES = [
 ];
 
 export const DRAW_AGAIN_TRIGGERS = ["重新", "重画", "重畫", "again"];
+
+export const SELF_LAUGHTER_ERROR_MESSAGE = `${BOT_NAME}不鼓励给自己刷幽默值哦！`;
+
+export const LAUGHTER_VALUE_MAP: Record<string, number> = {
+  哈哈: 2,
+  haha: 2,
+  hh: 1,
+  嘿嘿: 2,
+};
+
+export const HUMOR_LEVEL_NAME = [
+  { threshold: 0, name: "嫣然一笑" },
+  { threshold: 10, name: "忍俊不禁" },
+  { threshold: 20, name: "笑逐颜开" },
+  { threshold: 30, name: "欢声笑语" },
+  { threshold: 50, name: "捧腹大笑" },
+  { threshold: 70, name: "笑掉大牙" },
+  { threshold: 100, name: "笑傲江湖" },
+  { threshold: 200, name: "幽默大师" },
+];

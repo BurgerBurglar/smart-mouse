@@ -8,6 +8,7 @@ import {
   TICKLE_PROMPT,
 } from "./config";
 import { addMessages, context } from "./context";
+import { getHumorInfo } from "./count_laughter";
 import { MessageType } from "./types";
 
 export const getUserHandle = (message: Message) =>
@@ -116,8 +117,6 @@ export const isPersonalMessage = async (message: Message) => {
   if (isWrongMessageType(message)) return false;
   if (isTickleMe(message)) return true;
   if (message.type() !== MessageType.Text) return false;
-
-  const userHandle = getUserHandle(message);
   if (await isNameIncluded(message)) return true;
 
   const isMentioned = await message.mentionSelf();
@@ -128,15 +127,21 @@ export const isPersonalMessage = async (message: Message) => {
 };
 
 export const shouldChat = async (message: Message) => {
+  if ((await getHumorInfo(message))?.humorLevel) return false;
   if (await isPersonalMessage(message)) return true;
   if (message.type() !== MessageType.Text) return false;
+
   const roomTopic = await message.room()?.topic();
   if (!roomTopic) return false;
+
   if (!RANDOM_MESSAGE_REPLY.groups.includes(roomTopic)) return false;
+
   const { original, quotedContent } = await parseQuotedMessage(message);
   const messageLength = original.length + (quotedContent?.length ?? 0);
   if (RANDOM_MESSAGE_REPLY.lengthThreshold > messageLength) return false;
+
   if (message.age() > RANDOM_MESSAGE_REPLY.ageLimitInSeconds) return false;
+
   return Math.random() < RANDOM_MESSAGE_REPLY.probability;
 };
 
@@ -222,11 +227,12 @@ export const parseQuotedMessage = async (
     };
   }
   const quotedTalkerContact = await room.member(quotedTalkerAliasOrName);
-  const quotedTalkerName = quotedTalkerContact.name();
+  const quotedTalkerName = quotedTalkerContact?.name() ?? "";
+  const quotedTalkerId = quotedTalkerContact?.id ?? "";
   return {
     quotedTalkerAlias: quotedTalkerAliasOrName,
     quotedTalkerName,
-    quotedTalkerId: null,
+    quotedTalkerId,
     quotedContent,
     original,
   };
@@ -240,8 +246,8 @@ export const getMultipleRandomValues = <T>(arr: T[], num: number) => {
 export const shouldDraw = async (message: Message) => {
   if (message.type() !== MessageType.Text) return false;
   if (!(await isPersonalMessage(message))) return false;
-  const content = message.text();
-  if (!DRAW_TRIGGERS.some((word) => content.includes(word.toLowerCase())))
+  const { original } = await parseQuotedMessage(message);
+  if (!DRAW_TRIGGERS.some((word) => original.includes(word.toLowerCase())))
     return false;
   return true;
 };
@@ -252,10 +258,12 @@ export const sleep = (ms: number) => {
 
 export const getPreviousMessages = (message: Message) => {
   const room = message.room();
+  if (!room) return [];
   const previousMessages =
     context[room.id]?.map((msg) => ({
       ...msg,
-      content: msg.content.slice(0, AI_CONFIG.maxContextLength) as string,
+      content: (msg?.content?.slice(0, AI_CONFIG.maxContextLength) ??
+        "") as string,
     })) ?? [];
   return previousMessages;
 };

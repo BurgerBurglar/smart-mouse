@@ -26,7 +26,7 @@ const getDrawingPrompt = async (message: Message, hasHistory = false) => {
       .filter(
         ({ role, content }) =>
           role === "user" &&
-          DRAW_TRIGGERS.some((word) => content.toLowerCase().includes(word))
+          DRAW_TRIGGERS.some((word) => content?.toLowerCase().includes(word))
       )
       .map(({ content }) => content);
     prompts += previousPrompts.join("\n");
@@ -53,6 +53,7 @@ export const draw = async (message: Message) => {
   const prompt = await getDrawingPrompt(message, hasHistory);
   try {
     const imageUrl = await getAiDrawingUrl(prompt);
+    if (!imageUrl) return;
     message.say(FileBox.fromUrl(imageUrl));
   } catch (error: any) {
     console.error(error);
