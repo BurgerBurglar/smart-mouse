@@ -37,9 +37,15 @@ export interface GetResponseProps {
 }
 
 export interface LaughterData {
+  rank: number;
   userId: string;
   roomId: string;
   laughterMessages: number;
   humorLevel: number;
   userAlias: string | null;
 }
+
+export type LaughterDataSimplified = Pick<
+  LaughterData,
+  "userAlias" | "humorLevel"
+>;

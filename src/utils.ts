@@ -8,7 +8,7 @@ import {
   TICKLE_PROMPT,
 } from "./config";
 import { addMessages, context } from "./context";
-import { getHumorInfo } from "./count_laughter";
+import { getHumorInfo, shouldLookUpHumorLevels } from "./count_laughter";
 import { MessageType } from "./types";
 
 export const getUserHandle = (message: Message) =>
@@ -128,6 +128,7 @@ export const isPersonalMessage = async (message: Message) => {
 
 export const shouldChat = async (message: Message) => {
   if ((await getHumorInfo(message))?.humorLevel) return false;
+  if (await shouldLookUpHumorLevels(message)) return false;
   if (await isPersonalMessage(message)) return true;
   if (message.type() !== MessageType.Text) return false;
 
@@ -153,7 +154,11 @@ const finalizeOutput = (output: string) => {
   return new_output;
 };
 
-export const say = async (message: Message, content: string) => {
+export const say = async (
+  message: Message,
+  content: string,
+  shouldMention = true
+) => {
   const output = finalizeOutput(content);
   const room = message.room();
   if (!room) {
@@ -161,7 +166,7 @@ export const say = async (message: Message, content: string) => {
     return;
   }
   const talker = getTalker(message);
-  const mentionList = talker ? [talker] : [];
+  const mentionList = shouldMention && talker ? [talker] : [];
   room.say(output, ...mentionList);
   const prompt = await getPrompt(message);
   addMessages(room.id, [

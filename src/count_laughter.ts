@@ -6,15 +6,17 @@ import {
   LAUGHTER_VALUE_MAP,
   SELF_LAUGHTER_ERROR_MESSAGE,
 } from "./config";
-import { LaughterData, MessageType } from "./types";
+import { LaughterData, LaughterDataSimplified, MessageType } from "./types";
 import { parseQuotedMessage, say } from "./utils";
 
-const getLaughterData = async (userId: string, roomId: string) => {
-  const db = await sqlite.open({
+const getDataBase = () =>
+  sqlite.open({
     filename: "./count_laughters.db",
     driver: sqlite3.Database,
   });
 
+const getLaughterData = async (userId: string, roomId: string) => {
+  const db = await getDataBase();
   const result = await db.get<LaughterData>(
     `
   select * from Laughter
@@ -38,10 +40,7 @@ const incrementLaughterData = async ({
   roomId: string;
   humorLevel: number;
 }) => {
-  const db = await sqlite.open({
-    filename: "./count_laughters.db",
-    driver: sqlite3.Database,
-  });
+  const db = await getDataBase();
   const result = await db.run(
     `
     INSERT INTO Laughter (
@@ -81,7 +80,7 @@ const countInstances = (string: string, substring: string) => {
   return string.split(substring).length - 1;
 };
 
-const getHumorLevelInText = (
+const calculateHumorLevelInText = (
   text: string,
   laughterValueMap = LAUGHTER_VALUE_MAP
 ) => {
@@ -110,9 +109,11 @@ export const getHumorInfo = async (message: Message) => {
     quotedTalkerId,
     quotedTalkerAlias,
     roomId: room.id,
-    humorLevel: getHumorLevelInText(original),
+    humorLevel: calculateHumorLevelInText(original),
   };
 };
+
+const roundHumorLevel = (humorLevel: number) => humorLevel.toFixed(2);
 
 const getHumorLevelName = (humorLevel: number) => {
   for (const { threshold, name } of HUMOR_LEVEL_NAME.slice().reverse()) {
@@ -124,9 +125,9 @@ const getHumorLevelName = (humorLevel: number) => {
 const getLaughterResponse = ({
   userAlias,
   humorLevel,
-}: Pick<LaughterData, "userAlias" | "humorLevel">) =>
-  `哈哈！@${userAlias} 的幽默指数提升到了${humorLevel.toFixed(
-    2
+}: LaughterDataSimplified) =>
+  `哈哈！@${userAlias} 的幽默指数提升到了${roundHumorLevel(
+    humorLevel
   )}。目前等级：${getHumorLevelName(humorLevel)}`;
 
 export const respondToLaughter = async (message: Message) => {
@@ -150,5 +151,74 @@ export const respondToLaughter = async (message: Message) => {
     userAlias: quotedTalkerAlias,
     humorLevel: result.humorLevel,
   });
-  say(message, laughterResponse);
+  say(message, laughterResponse, false);
+};
+
+const getAllLaughterData = async (message: Message) => {
+  const room = message.room();
+  if (!room) return [];
+  const roomId = room.id;
+  const db = await getDataBase();
+  const laughterData = await db.all<
+    Pick<LaughterData, "rank" | "userId" | "userAlias" | "humorLevel">[]
+  >(
+    `
+    SELECT ROW_NUMBER() OVER(ORDER BY humorLevel DESC ) as rank,
+          userId, 
+          userAlias,
+          humorLevel
+    FROM   Laughter
+    WHERE  roomId = @roomId
+    ORDER  BY humorLevel DESC; 
+    `,
+    {
+      "@roomId": roomId,
+    }
+  );
+  return laughterData;
+};
+
+const formatLaughterData = (
+  laughterData: Pick<LaughterData, "rank" | "userAlias" | "humorLevel">
+) => {
+  return `${laughterData.rank}. @${
+    laughterData.userAlias
+  } 幽默指数：${roundHumorLevel(
+    laughterData.humorLevel
+  )}，目前等级：${getHumorLevelName(laughterData.humorLevel)}。`;
+};
+
+export const shouldLookUpHumorLevels = async (message: Message) => {
+  const { original } = await parseQuotedMessage(message);
+  return original.includes("#幽默指数");
+};
+
+const pickLaughterDataRows = (
+  rows: Pick<LaughterData, "rank" | "userId" | "userAlias" | "humorLevel">[],
+  talkerId: LaughterData["userId"]
+) => {
+  const NUM_FIRST_ROWS = 3;
+  const firstRows = rows.slice(0, NUM_FIRST_ROWS);
+  if (firstRows.some(({ userId }) => userId === talkerId)) return { firstRows };
+  const talkerRow = rows.find(({ userId }) => userId === talkerId);
+  if (!talkerRow) return { firstRows };
+  return {
+    firstRows,
+    talkerRow,
+  };
+};
+
+export const lookUpHumorLevels = async (message: Message) => {
+  if (!(await shouldLookUpHumorLevels(message))) return;
+  const talkerId = message.talker().id;
+  const results = await getAllLaughterData(message);
+  if (!results.length) return;
+  const { firstRows, talkerRow } = pickLaughterDataRows(results, talkerId);
+  let response = `哈哈，各位最近都在努力幽默嘛？\n\n${firstRows
+    .map(formatLaughterData)
+    .join("\n\n")}
+    `;
+  if (talkerRow) response += `--------\n${formatLaughterData(talkerRow)}`;
+  response += "\n\n请再接再厉，提升自己的幽默感哦！";
+  say(message, response, false);
 };
