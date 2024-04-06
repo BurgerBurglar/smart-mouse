@@ -48,4 +48,6 @@ export interface LaughterData {
 export type LaughterDataSimplified = Pick<
   LaughterData,
   "userAlias" | "humorLevel"
->;
+> & {
+  isIncrease: boolean;
+};

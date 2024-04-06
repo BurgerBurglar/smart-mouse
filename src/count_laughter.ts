@@ -80,18 +80,14 @@ const countInstances = (string: string, substring: string) => {
   return string.split(substring).length - 1;
 };
 
-const calculateHumorLevelInText = (
-  text: string,
-  laughterValueMap = LAUGHTER_VALUE_MAP
-) => {
+const calculateHumorLevelInText = (text: string) => {
   let humorLevel = 0;
-  for (const [substring, value] of Object.entries(laughterValueMap)) {
+  for (const [substring, value] of Object.entries(LAUGHTER_VALUE_MAP)) {
     const numInstances = countInstances(text, substring);
     humorLevel += value * numInstances;
   }
-  // normalize laughter levels
-  humorLevel = humorLevel ** (1 / 3);
-  return humorLevel;
+  const normalizedHumorLevel = Math.cbrt(humorLevel);
+  return normalizedHumorLevel;
 };
 
 export const getHumorInfo = async (message: Message) => {
@@ -125,10 +121,13 @@ const getHumorLevelName = (humorLevel: number) => {
 const getLaughterResponse = ({
   userAlias,
   humorLevel,
-}: LaughterDataSimplified) =>
-  `哈哈！@${userAlias} 的幽默指数提升到了${roundHumorLevel(
+  isIncrease,
+}: LaughterDataSimplified) => {
+  const changeText = isIncrease ? "提升" : "下降";
+  return `哈哈！@${userAlias} 的幽默指数${changeText}到了${roundHumorLevel(
     humorLevel
   )}。目前等级：${getHumorLevelName(humorLevel)}`;
+};
 
 export const respondToLaughter = async (message: Message) => {
   const humorInfo = await getHumorInfo(message);
@@ -150,6 +149,7 @@ export const respondToLaughter = async (message: Message) => {
   const laughterResponse = getLaughterResponse({
     userAlias: quotedTalkerAlias,
     humorLevel: result.humorLevel,
+    isIncrease: humorLevel > 0,
   });
   say(message, laughterResponse, false);
 };

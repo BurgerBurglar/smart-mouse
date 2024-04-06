@@ -318,6 +318,10 @@ export const DRAW_AGAIN_TRIGGERS = ["重新", "重画", "重畫", "again"];
 export const SELF_LAUGHTER_ERROR_MESSAGE = `${BOT_NAME}不鼓励给自己刷幽默值哦！`;
 
 export const LAUGHTER_VALUE_MAP: Record<string, number> = {
+  负分: -0.5,
+  零分: -0.3,
+  "0分": -0.3,
+  不好笑: -0.5,
   哈哈: 2,
   haha: 2,
   hh: 1,
