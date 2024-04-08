@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { log, Message } from "wechaty";
-import { getResponse } from "./ai";
+import { getAiVoice, getResponse } from "./ai";
 import {
   AI_CONFIG,
   DRAW_REPLIES,
@@ -76,6 +76,11 @@ export const chat = async (message: Message) => {
         if (i !== AI_CONFIG.maxRetries - 1) continue;
         const badResponse = randomChoice(badRequestReplies);
         say(message, badResponse);
+        return;
+      }
+      const audio = await getAiVoice(response);
+      if (roomTopic === "测试" || response.length < 30) {
+        message.say(audio);
         return;
       }
       say(message, response);
