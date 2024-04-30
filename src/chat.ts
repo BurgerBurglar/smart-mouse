@@ -6,6 +6,7 @@ import {
   DRAW_REPLIES,
   GAMES,
   STRING_TO_REPLACE_GAMES,
+  VOICE_MESSAGE_LENGTH_THRESHOLD,
 } from "./config";
 import {
   getMultipleRandomValues,
@@ -79,7 +80,10 @@ export const chat = async (message: Message) => {
         return;
       }
       const audio = await getAiVoice(response);
-      if (roomTopic === "测试" || response.length < 30) {
+      if (
+        roomTopic === "测试" ||
+        response.length < VOICE_MESSAGE_LENGTH_THRESHOLD
+      ) {
         message.say(audio);
         return;
       }

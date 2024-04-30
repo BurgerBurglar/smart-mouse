@@ -245,7 +245,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
 const NICKNAME_MAP: Record<string, string | undefined> = {
   Fabius: "爹",
   煞风景: "散委",
-  "Paul-郑褚": "群主",
+  郑褚: "群主",
   毅只田鼠浴火重生: "主人",
   yiren: "肿编",
   Leona: "六娜",
@@ -339,3 +339,5 @@ export const HUMOR_LEVEL_NAME = [
   { threshold: 100, name: "笑傲江湖" },
   { threshold: 200, name: "幽默大师" },
 ];
+
+export const VOICE_MESSAGE_LENGTH_THRESHOLD = 20;
