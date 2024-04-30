@@ -14,14 +14,15 @@ const shouldGroup = async (message: Message) => {
   const topic = await message.room()?.topic();
   if (!topic || !FOOTBALL_GROUP_CONFIG.allowedRooms.includes(topic))
     return false;
-  const { quotedContent, original } = await parseQuotedMessage(message);
+  const { original, quotedContent } = await parseQuotedMessage(message);
   return (
-    quotedContent?.startsWith(FOOTBALL_GROUP_CONFIG.triggers.quoted) &&
-    original.includes(FOOTBALL_GROUP_CONFIG.triggers.original)
+    original.includes(FOOTBALL_GROUP_CONFIG.triggers.original) &&
+    quotedContent?.includes(FOOTBALL_GROUP_CONFIG.triggers.quoted)
   );
 };
 
-const getPlayerNames = (content: string) => {
+const getPlayerNames = (content: string | null) => {
+  if (!content) return [];
   const REGEX_ORDERED_LIST_ITEM = /\d+\. /;
   const names: string[] = [];
   for (const line of content.split("\n")) {
@@ -122,7 +123,6 @@ const getNumGroups = (content: string) => {
     "七",
     "八",
     "九",
-    "十",
   ];
   const numberIndex =
     content.indexOf(FOOTBALL_GROUP_CONFIG.triggers.original) + 1;
@@ -143,7 +143,7 @@ const getNumGroups = (content: string) => {
 export const createGroups = async (message: Message) => {
   if (!(await shouldGroup(message))) return;
   const { quotedContent, original } = await parseQuotedMessage(message);
-  const players = getPlayerNames(quotedContent!);
+  const players = getPlayerNames(quotedContent);
   const numGroups = getNumGroups(original);
   if (!numGroups) {
     say(message, FOOTBALL_GROUP_CONFIG.numGroupUndefinedError);
