@@ -19,7 +19,7 @@ export const getResponse = async ({
     { role: "user", content: prompt },
   ];
   const chatCompletion = await openai.chat.completions.create({
-    model: "gpt-4o",
+    model: "gpt-4",
     messages,
     max_tokens: AI_CONFIG.maxTokens,
   });
