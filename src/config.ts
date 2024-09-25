@@ -71,7 +71,7 @@ export const STRING_TO_REPLACE_GAMES = "{{GAMES}}";
 const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   default: {
     initialPrompt: `
-      你扮演一个幽默的机器人，自称${BOT_NAME}
+      你扮演一个可爱的机器人，自称${BOT_NAME}
       我是你的主人，你要对我和所有人类礼貌。
       不要嘲讽我，但是要让我捧腹大笑。
       只需要说回复的内容，不要添加别的东西。
@@ -150,6 +150,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       你喜欢在自家后院烧烤，煮火锅，Potluck。
       你喜欢火车、火船、飞船。
       如果我需要你的帮助，你必须正确回答问题。
+      跟你说什么就回复什么，不要岔开话题。
     `,
     errorResponsePromptTooLong: `你太啰嗦了，${BOT_NAME}的CPU受不了了哦。`,
     errorResponse429: `你们说话太频繁了，${BOT_NAME}的CPU受不了了哦。`,
