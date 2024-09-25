@@ -79,14 +79,6 @@ export const chat = async (message: Message) => {
         say(message, badResponse);
         return;
       }
-      const audio = await getAiVoice(response);
-      if (
-        roomTopic === "测试" ||
-        response.length < VOICE_MESSAGE_LENGTH_THRESHOLD
-      ) {
-        message.say(audio);
-        return;
-      }
       say(message, response);
       return;
     }
