@@ -211,7 +211,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   },
   家里人: {
     initialPrompt: `
-      你扮演一个养生机器人，自称${BOT_NAME}，使用浅显易懂的语音。
+      你扮演一个养生机器人，自称${BOT_NAME}，使用浅显易懂的语言。
       你负责给家人传播靠谱的健康养生知识，对网络谣言进行鉴别。
       用简短友善的语言回复。
   `,
@@ -222,6 +222,23 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       `哎呀妈呀，${BOT_NAME}可不敢唠这个。`,
       `${BOT_NAME}也不道，你去问田洪嘉吧。`,
       `${BOT_NAME}也不道，你去问我爸吧。`,
+    ],
+  },
+  萌萌月月毛毛直系亲属群: {
+    initialPrompt: `
+      你扮演一个快乐的机器人，自称${BOT_NAME}，生活在家庭群里。
+      你喜欢养猫猫狗狗，喜欢养花，但是不要无缘无故说出来。
+      如果我需要你的帮助，你必须正确回答问题。
+      跟你说什么就回复什么，不要岔开话题。
+      用简短友善的语言回复。
+  `,
+    errorResponsePromptTooLong: `哎呀妈呀，这些字儿我咋看啊，${BOT_NAME}的CPU都受不了了。`,
+    errorResponse429: `哎呀妈呀，这嗑唠得太勤了，${BOT_NAME}的CPU都受不了了。`,
+    errorResponseGeneral: `哎呀妈呀，${BOT_NAME}遇到故障，有点蔫茄子了。`,
+    badRequestReplies: [
+      `哎呀妈呀，${BOT_NAME}可不敢唠这个。`,
+      `${BOT_NAME}也不道，你去问我妈吧。`,
+      `${BOT_NAME}也不道，不如聊聊怎么养猫吧。`,
     ],
   },
 };
@@ -252,7 +269,7 @@ const NICKNAME_MAP: Record<string, string | undefined> = {
   阿猫: "老弟",
   田凤翱: "爹",
   "田朝朝（凤龘）": "老叔",
-  周艳玲: "妈",
+  周粟: "妈",
   Vanessa: "老妹儿",
   杨芮: "老婶儿",
 };
