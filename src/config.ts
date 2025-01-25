@@ -1,8 +1,8 @@
-import { GroupAiConfig } from "./types";
+import { GroupAiConfig } from "./types"
 
-export const BOT_NAME = "鸭鸭";
+export const BOT_NAME = "鸭鸭"
 
-export const TICKLE_PROMPT = `拍了拍${BOT_NAME}的鸭脖`;
+export const TICKLE_PROMPT = `拍了拍${BOT_NAME}的鸭脖`
 
 export const RANDOM_MESSAGE_REPLY = {
   probability: 0.02,
@@ -14,14 +14,14 @@ export const RANDOM_MESSAGE_REPLY = {
     "周日烧烤",
   ],
   lengthThreshold: 10,
-};
+}
 
 export const REPLACE_STRINGS_MAP = [
   { source: "呀", target: "鸭" },
   { source: "农", target: "衣" },
   { source: "湛", target: "甚" },
   { source: "辗", target: "碾" },
-];
+]
 
 export const GAMES = [
   "博德之门3",
@@ -64,9 +64,9 @@ export const GAMES = [
   "马里奥大乱斗",
   "猎天使魔女",
   "马里奥赛车",
-];
+]
 
-export const STRING_TO_REPLACE_GAMES = "{{GAMES}}";
+export const STRING_TO_REPLACE_GAMES = "{{GAMES}}"
 
 const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
   default: {
@@ -241,7 +241,7 @@ const GROUP_AI_CONFIGS: Record<string, GroupAiConfig> = {
       `${BOT_NAME}也不道，不如聊聊怎么养猫吧。`,
     ],
   },
-};
+}
 
 const NICKNAME_MAP: Record<string, string | undefined> = {
   Fabius: "爹",
@@ -272,7 +272,7 @@ const NICKNAME_MAP: Record<string, string | undefined> = {
   周粟: "妈",
   Vanessa: "老妹儿",
   杨芮: "老婶儿",
-};
+}
 
 export const LANGUAGE_HELP_CONFIG = {
   allowedRooms: ["調查兵團第一O一期訓練生🇺🇸", "DUOLINGO大比拼🤔"],
@@ -283,7 +283,7 @@ export const LANGUAGE_HELP_CONFIG = {
     作文用什么语言，你就修改成什么语言 ，千万不要翻译成别的语言。
     用中文对这篇作文的水平给出简短评价，并做出鼓励。
   `,
-};
+}
 
 export const AI_CONFIG = {
   maxInputLength: 500,
@@ -294,7 +294,7 @@ export const AI_CONFIG = {
   badResponseFlags: ["请不要", "道德", "尊重", "歧视", "种族主义"],
   groups: GROUP_AI_CONFIGS,
   nicknameMap: NICKNAME_MAP,
-};
+}
 
 export const FOOTBALL_GROUP_CONFIG = {
   allowedRooms: [
@@ -311,19 +311,19 @@ export const FOOTBALL_GROUP_CONFIG = {
   numGroupUndefinedError: `${BOT_NAME}头晕了，不知道应该分成几组哦，你去问靠谱吧。`,
   maxNumGroups: 5,
   plusPlayersName: "minion",
-};
+}
 
-export const DRAW_TRIGGERS = ["画", "畫", "draw", "paint"];
+export const DRAW_TRIGGERS = ["画", "畫", "draw", "paint"]
 
 export const DRAW_REPLIES = [
   "请稍等，我马上画好！",
   "芝麻开门，鸭鸭画画！一，二，三！",
   "马上就好，请看毕鸭索!",
-];
+]
 
-export const DRAW_AGAIN_TRIGGERS = ["重新", "重画", "重畫", "again"];
+export const DRAW_AGAIN_TRIGGERS = ["重新", "重画", "重畫", "again"]
 
-export const SELF_LAUGHTER_ERROR_MESSAGE = `${BOT_NAME}不鼓励给自己刷幽默值哦！`;
+export const SELF_LAUGHTER_ERROR_MESSAGE = `${BOT_NAME}不鼓励给自己刷幽默值哦！`
 
 export const LAUGHTER_VALUE_MAP: Record<string, number> = {
   负分: -0.5,
@@ -340,7 +340,7 @@ export const LAUGHTER_VALUE_MAP: Record<string, number> = {
   "[Happy]": 2,
   "[Trick]": 2,
   "[Lol]": 2,
-};
+}
 
 export const HUMOR_LEVEL_NAME = [
   { threshold: 0, name: "嫣然一笑" },
@@ -352,6 +352,7 @@ export const HUMOR_LEVEL_NAME = [
   { threshold: 100, name: "笑傲江湖" },
   { threshold: 200, name: "谈笑风生" },
   { threshold: 500, name: "幽默大师" },
-];
+  { threshold: 1000, name: "喜剧之王" },
+]
 
-export const VOICE_MESSAGE_LENGTH_THRESHOLD = 20;
+export const VOICE_MESSAGE_LENGTH_THRESHOLD = 20
