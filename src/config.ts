@@ -287,7 +287,7 @@ export const LANGUAGE_HELP_CONFIG = {
 }
 
 export const AI_CONFIG = {
-  maxInputLength: 500,
+  maxInputLength: 999,
   maxTokens: 1500,
   maxContextLength: 500,
   maxRetries: 3,
